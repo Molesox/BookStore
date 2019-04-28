@@ -11,7 +11,8 @@ using namespace std;
 int main() {
 
     //TODO:: find how to use relative path instead.
-    Library l = Library("C:\\Users\\Daniel\\Documents\\OS\\BookStore\\book_dataset.csv");
+    Library l = Library(R"(C:\Users\Daniel\Documents\OS\BookStore\book_dataset.csv)");
+    l.print_map();
 
     return 0;
 }

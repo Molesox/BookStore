@@ -38,9 +38,9 @@ Library::Library(string const &filename) {
                 end_genre = line.find(';', end_date + 1);
                 genre = line.substr(end_date + 1, end_genre - (end_date + 1));
 
-            //Book *temp;
-            //temp = new Book(title, author, date, genre, stol(id, nullptr, 10));
-        }
+                //Book *temp;
+                //temp = new Book(title, author, date, genre, stol(id, nullptr, 10));
+            }
             genres.push_back(genre);
             m_nb_books += 1;
         }
