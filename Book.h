@@ -9,7 +9,7 @@
 #include <vector>
 
 
-typedef unsigned long int Id;
+typedef unsigned long int Id_t;
 
 
 class Book {
@@ -18,7 +18,7 @@ public:
 //CONSTRUCTORS
 
     Book(std::string name, std::string author, std::string date,
-         std::string genre, Id wiki_id, int nb_reads = 0);
+         std::string genre, Id_t wiki_id, int nb_reads = 0);
 
 //METHODS
 
@@ -30,7 +30,7 @@ public:
 
 //GETTERS AND SETTERS
 
-    Id get_id() const;
+    Id_t get_id() const;
 
     bool is_borrowed() const;
 
@@ -51,9 +51,9 @@ public:
 private:
     int m_nb_reads;
     bool m_is_borrowed;
-    static Id id;//Initialised in cpp file to 0
-    Id m_id;
-    Id m_wiki_id;
+    static Id_t id;//Initialised in cpp file to 0
+    Id_t m_id;
+    Id_t m_wiki_id;
 
 };
 

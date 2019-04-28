@@ -16,47 +16,42 @@ Library::Library(string const &filename) {
 
     if (m_dataset.is_open()) {
 
-        vector<string> genres;//to initialise the hash map
+
         int end_id, end_title, end_author, end_date, end_genre;//end positions in .csv file
         string id, title, author, date, genre;
+
         string line;
         while (getline(m_dataset, line)) {
-            {
-                //TODO:: create function returning a pointer over a new book. code btw {...} should disappear.
-                end_id = line.find(';');
-                id = line.substr(0, end_id);
 
-                end_title = line.find(';', end_id + 1);
-                title = line.substr(end_id + 1, end_title - (end_id + 1));
+            //TODO:: create function returning a pointer over a new book. code btw {...} should disappear.
+            end_id = line.find(';');
+            id = line.substr(0, end_id);
 
-                end_author = line.find(';', end_title + 1);
-                author = line.substr(end_title + 1, end_author - (end_title + 1));
+            end_title = line.find(';', end_id + 1);
+            title = line.substr(end_id + 1, end_title - (end_id + 1));
 
-                end_date = line.find(';', end_author + 1);
-                date = line.substr(end_author + 1, end_date - (end_author + 1));
+            end_author = line.find(';', end_title + 1);
+            author = line.substr(end_title + 1, end_author - (end_title + 1));
 
-                end_genre = line.find(';', end_date + 1);
-                genre = line.substr(end_date + 1, end_genre - (end_date + 1));
+            end_date = line.find(';', end_author + 1);
+            date = line.substr(end_author + 1, end_date - (end_author + 1));
 
-                //Book *temp;
-                //temp = new Book(title, author, date, genre, stol(id, nullptr, 10));
-            }
-            genres.push_back(genre);
+            end_genre = line.find(';', end_date + 1);
+            genre = line.substr(end_date + 1, end_genre - (end_date + 1));
+
+
+            int idd = stol(id, nullptr, 10);
+
+            Book *temp;
+            temp = new Book(title, author, date, genre, idd);
+
+
+            m_library[genre][idd] = temp;
             m_nb_books += 1;
         }
         m_dataset.close();
 
-        //hash map initialisation. If genre exists it add 1 to counter
-        // otherwise creates a new field.
-        for (auto &genre : genres)
-            ++m_hmap_genres[genre];
 
-        //distinct genres
-        m_nb_shelfs = m_hmap_genres.size();
-
-        //finds maximum value in the hash map.
-        auto max = get_max(m_hmap_genres);
-        m_biggest_shelf = max.second;
 
 
     } else cout << "Unable to open file : " << filename << "\n";
@@ -75,9 +70,9 @@ Library::get_max(const unordered_map<KeyType, ValueType> &x) {
 
 void Library::print_map() {
 
-    for (const auto &p:m_hmap_genres) {
+    for (const auto &p:m_library) {
         cout << p.first << endl;
-        cout << " appears : " << p.second << " times" << endl;
+        cout << " appears : " << p.second.size() << " times" << endl;
     }
 }
 

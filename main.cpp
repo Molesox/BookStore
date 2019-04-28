@@ -12,7 +12,7 @@ int main() {
 
     //TODO:: find how to use relative path instead.
     Library l = Library(R"(C:\Users\Daniel\Documents\OS\BookStore\book_dataset.csv)");
-    l.print_map();
+    l.print_genres_occurences();
 
     return 0;
 }

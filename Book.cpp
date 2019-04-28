@@ -8,12 +8,12 @@
 #include <iostream>
 
 using namespace std;
-Id Book::id = 0;
+Id_t Book::id = 0;
 
 //CONSTRUCTORS
 
 Book::Book(std::string name, std::string author,
-           std::string date, std::string genre, Id wiki_id, int nb_reads) {
+           std::string date, std::string genre, Id_t wiki_id, int nb_reads) {
 
     m_name = name;
     m_author = author;
@@ -31,7 +31,7 @@ Book::Book(std::string name, std::string author,
 
 void Book::print(std::ostream &flux) const {
 
-    flux << "Id : " << m_id << "\n";
+    flux << "Id_t : " << m_id << "\n";
     flux << "Name : " + m_name << "\n";
     flux << "Genre : " + m_genre << "\n";
     flux << "Author : " + m_author << "\n";

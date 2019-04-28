@@ -14,9 +14,11 @@
 
 
 typedef std::vector<Book> shelf_t;
-typedef std::vector<shelf_t> library_t;
+
 typedef std::ifstream File;
-typedef std::unordered_map<std::string, size_t> hash_map_t;
+typedef std::unordered_map<std::string, size_t> hash_map_genres_t;
+typedef std::unordered_map<Id_t, Book *> hash_map_books_t;
+typedef std::unordered_map<std::string, hash_map_books_t> library_t;
 
 class Library {
 
@@ -27,7 +29,7 @@ public:
     template<typename KeyType, typename ValueType>
     std::pair<KeyType, ValueType> get_max(const std::unordered_map<KeyType, ValueType> &x);
 
-    void print_map();
+    void print_genres_occurences();
 
     size_t getNbShelfs() const;
 
@@ -43,9 +45,8 @@ public:
 
 private:
     File m_dataset;
-    hash_map_t m_hmap_genres;
 
-    library_t library;
+    library_t m_library;
 
     size_t m_nb_shelfs;
     size_t m_nb_books;
