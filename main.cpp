@@ -11,8 +11,7 @@ using namespace std;
 int main() {
 
 
-
-    Library l= Library("book_dataset.csv");
+    Library l = Library("C:\\Users\\Daniel\\Documents\\OS\\BookStore\\book_dataset.csv");
 
     return 0;
 }
