@@ -13,10 +13,7 @@
 #include "Book.h"
 
 
-typedef std::vector<Book> shelf_t;
-
 typedef std::ifstream File;
-typedef std::unordered_map<std::string, size_t> hash_map_genres_t;
 typedef std::unordered_map<Id_t, Book *> hash_map_books_t;
 typedef std::unordered_map<std::string, hash_map_books_t> library_t;
 
@@ -24,12 +21,24 @@ class Library {
 
 public:
 
+    //CONSTRUCTORS & DESTRUCTORS
+
     Library(std::string const &filename);
+
+    //METHODS
+
+    void print(std::ostream &flux) const;
 
     template<typename KeyType, typename ValueType>
     std::pair<KeyType, ValueType> get_max(const std::unordered_map<KeyType, ValueType> &x);
 
-    void print_genres_occurences();
+    void init_max_shelf();
+
+    void print_genres_occurences() const;
+
+    void print_1book(Id_t id) const;
+
+    //GETTERS & SETTERS
 
     size_t getNbShelfs() const;
 
@@ -43,16 +52,22 @@ public:
 
     void setBiggestShelf(size_t biggestShelf);
 
+    //ATTRIBUTES
+
 private:
-    File m_dataset;
+
+    std::string m_filename;
+    File m_dataset;//make it a pointer ? Is ifstream the best type?
 
     library_t m_library;
 
-    size_t m_nb_shelfs;
+    size_t m_nb_shelfs;//same as nb of genres
     size_t m_nb_books;
-    size_t m_biggest_shelf;
+    size_t m_max_shelf;
+
 
 };
 
+std::ostream &operator<<(std::ostream &os, const Library &library);
 
 #endif //BOOKSTORE_LIBRARY_H
