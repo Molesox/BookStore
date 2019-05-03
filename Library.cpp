@@ -12,7 +12,9 @@ using namespace std;
 Library::Library(string const &filename) {
     m_filename = filename;
     m_dataset = ifstream(m_filename);
+    m_library = library_t(10);
     m_nb_books = 0;
+    m_max_shelf = 0;
 
     if (m_dataset.is_open()) {
 
@@ -20,8 +22,9 @@ Library::Library(string const &filename) {
         string title, author, date, genre;
 
         int id;
-
+        bool chichi = false;
         string line;
+        int total = 0;
         while (getline(m_dataset, line)) {
 
             //TODO:: create function returning a pointer over a new book. code btw {...} should disappear.
@@ -44,19 +47,53 @@ Library::Library(string const &filename) {
             Book *temp;//outside the while()?
             temp = new Book(title, author, date, genre, id);
 
+            for (auto &i : m_library) {
+                total++;
+                if (i.genre == genre) {
+                    i.shelf[temp->get_id()] = temp;
+                    chichi = true;
 
-            m_library[genre][temp->get_id()] = temp;
+                    break;
+                }
+            }
+            if (!chichi) {
+                shelf_t a = {genre, hash_map_books_t()};
+                a.shelf[temp->get_id()] = temp;
+                m_library.push_back(a);
+            }
+
+            chichi = false;
+
             m_nb_books += 1;
         }
         m_dataset.close();
 
         init_max_shelf();
-
+        cout << "total " << total << endl;
         m_nb_shelfs = m_library.size();
 
-    } else cout << "Unable to open file : " << m_filename << "\n";
+    } else {
+        cout << "Unable to open file : " << m_filename << "\n";
+        exit(2);
+    }
+
 }
 
+Library::~Library() {
+    for (auto &i : m_library) {
+        i.shelf.clear();
+    }
+}
+
+Library::Library(const Library &lib) {
+
+    m_library = lib.m_library;
+    m_filename = lib.m_filename;
+    m_nb_books = lib.m_nb_books;
+    m_max_shelf = lib.m_max_shelf;
+
+
+}
 
 void Library::init_max_shelf() {
     m_max_shelf = 0;
@@ -64,7 +101,8 @@ void Library::init_max_shelf() {
     size_t temp = 0;
 
     for (const auto &g : m_library) {
-        temp = g.second.size();
+
+        temp = g.shelf.size();
         if (temp > big) {
             big = temp;
         }
@@ -95,8 +133,8 @@ Library::get_max(const unordered_map<KeyType, ValueType> &x) {
 void Library::print_genres_occurences() const {
 
     for (const auto &pair:m_library) {
-        cout << pair.first << endl;
-        cout << " appears : " << pair.second.size() << " times" << endl;
+        cout << pair.genre << endl;
+        cout << " appears : " << pair.shelf.size() << " times" << endl;
     }
 }
 
@@ -106,13 +144,14 @@ void Library::print_1book(Id_t id) const {
         //C plutôt pas mal ce truc hahah car
         //j'aurais du mal a dire quel est le type de retour
         //hahahhahahahhahahahahahahha
-        auto temp = g.second.find(id);
+        auto temp = g.shelf.find(id);
 
-        if (temp != g.second.end()) {
+        if (temp != g.shelf.end()) {
             cout << *(temp->second) << endl;
+            return;
         }
-
     }
+    cout << "Book not found" << endl;
 }
 //GETTERS & SETTERS
 

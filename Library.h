@@ -9,13 +9,22 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <mutex>
 #include <bits/stdc++.h>
 #include "Book.h"
 
 
 typedef std::ifstream File;
 typedef std::unordered_map<Id_t, Book *> hash_map_books_t;
-typedef std::unordered_map<std::string, hash_map_books_t> library_t;
+//typedef std::unordered_map<std::string, hash_map_books_t> library_t;
+
+typedef struct s_shelf {
+    std::string genre;
+    hash_map_books_t shelf;
+
+} shelf_t;
+
+typedef std::vector<shelf_t> library_t;
 
 class Library {
 
@@ -24,6 +33,10 @@ public:
     //CONSTRUCTORS & DESTRUCTORS
 
     Library(std::string const &filename);
+
+    Library(const Library &lib);
+
+    ~Library(void);
 
     //METHODS
 

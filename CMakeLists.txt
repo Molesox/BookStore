@@ -3,4 +3,4 @@ project(BookStore)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(BookStore main.cpp Book.cpp Book.h Library.cpp Library.h)
+add_executable(BookStore main.cpp Book.cpp Book.h Library.cpp Library.h Customer.cpp Customer.h John.cpp John.h)

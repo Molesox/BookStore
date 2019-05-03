@@ -31,7 +31,7 @@ Book::Book(std::string name, std::string author,
 
 void Book::print(std::ostream &flux) const {
 
-    flux << "Id_t : " << m_id << "\n";
+    flux << "Id : " << m_id << "\n";
     flux << "Name : " + m_name << "\n";
     flux << "Genre : " + m_genre << "\n";
     flux << "Author : " + m_author << "\n";
