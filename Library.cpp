@@ -49,17 +49,18 @@ Library::Library(string const &filename) {
 
             for (auto &i : m_library) {
                 total++;
-                if (i.genre == genre) {
-                    i.shelf[temp->get_id()] = temp;
-                    chichi = true;
+                if (i.getMGenre() == genre) {
 
+                    i.add_book(temp);
+                    chichi = true;
                     break;
                 }
             }
             if (!chichi) {
-                shelf_t a = {genre, hash_map_books_t()};
-                a.shelf[temp->get_id()] = temp;
-                m_library.push_back(a);
+
+                m_library.push_back(Shelf());
+                m_library.back().setMGenre(genre);
+                m_library.back().add_book(temp);
             }
 
             chichi = false;
@@ -79,11 +80,7 @@ Library::Library(string const &filename) {
 
 }
 
-Library::~Library() {
-    for (auto &i : m_library) {
-        i.shelf.clear();
-    }
-}
+
 
 Library::Library(const Library &lib) {
 
@@ -102,7 +99,7 @@ void Library::init_max_shelf() {
 
     for (const auto &g : m_library) {
 
-        temp = g.shelf.size();
+        temp = g.getMShelf().size();
         if (temp > big) {
             big = temp;
         }
@@ -133,8 +130,8 @@ Library::get_max(const unordered_map<KeyType, ValueType> &x) {
 void Library::print_genres_occurences() const {
 
     for (const auto &pair:m_library) {
-        cout << pair.genre << endl;
-        cout << " appears : " << pair.shelf.size() << " times" << endl;
+        cout << pair.getMGenre() << endl;
+        cout << " appears : " << pair.getMShelf().size() << " times" << endl;
     }
 }
 
@@ -144,9 +141,9 @@ void Library::print_1book(Id_t id) const {
         //C plutôt pas mal ce truc hahah car
         //j'aurais du mal a dire quel est le type de retour
         //hahahhahahahhahahahahahahha
-        auto temp = g.shelf.find(id);
+        auto temp = g.getMShelf().find(id);
 
-        if (temp != g.shelf.end()) {
+        if (temp != g.getMShelf().end()) {
             cout << *(temp->second) << endl;
             return;
         }
