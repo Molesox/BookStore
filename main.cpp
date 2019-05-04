@@ -9,7 +9,7 @@ using namespace std;
 
 int main() {
 
-    Library l = Library(R"(C:\Users\Daniel\Documents\OS\BookStore\book_dataset.csv)");
+    Library l = Library(R"(..\book_dataset.csv)");
     cout << l;
     Id_t in;
     while (cin >> in) {
