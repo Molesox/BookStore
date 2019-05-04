@@ -26,9 +26,11 @@ private:
     std::string m_genre;
     hash_map_books_t m_shelf;
 
+
 public:
 
     //CONSTRUCTORS & MOVE & COPY & DESTRUCTORS
+
     Shelf() = default;
 
     ~Shelf();
@@ -43,7 +45,10 @@ public:
 
     //METHODS
 
+    const size_t nb_books() const;
     void add_book(Book *book);
+
+    Book *borrow(Id_t id);
 
     //GETTERS & SETTERS
 
@@ -52,7 +57,6 @@ public:
     void setMGenre(const std::string &mGenre);
 
     const hash_map_books_t &getMShelf() const;
-
 
 };
 

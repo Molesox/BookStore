@@ -5,11 +5,14 @@
 #include "Library.h"
 #include <iostream>
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 using namespace std;
 
 //CONSTRUCTORS
 
 Library::Library(string const &filename) {
+
     m_filename = filename;
     m_dataset = ifstream(m_filename);
     m_library = library_t(10);
@@ -18,59 +21,35 @@ Library::Library(string const &filename) {
 
     if (m_dataset.is_open()) {
 
-        int end_id, end_title, end_author, end_date, end_genre;//end positions in .csv file
-        string title, author, date, genre;
 
-        int id;
-        bool chichi = false;
+        bool added = false;
         string line;
-        int total = 0;
+
         while (getline(m_dataset, line)) {
 
-            //TODO:: create function returning a pointer over a new book. code btw {...} should disappear.
-            end_id = line.find(';');
-            id = stol(line.substr(0, end_id), nullptr, 10);
-
-            end_title = line.find(';', end_id + 1);
-            title = line.substr(end_id + 1, end_title - (end_id + 1));
-
-            end_author = line.find(';', end_title + 1);
-            author = line.substr(end_title + 1, end_author - (end_title + 1));
-
-            end_date = line.find(';', end_author + 1);
-            date = line.substr(end_author + 1, end_date - (end_author + 1));
-
-            end_genre = line.find(';', end_date + 1);
-            genre = line.substr(end_date + 1, end_genre - (end_date + 1));
-
-
-            Book *temp;//outside the while()?
-            temp = new Book(title, author, date, genre, id);
+            Book *temp = extract_book(line);
 
             for (auto &i : m_library) {
-                total++;
-                if (i.getMGenre() == genre) {
+
+                if (i.getMGenre() == temp->m_genre) {
 
                     i.add_book(temp);
-                    chichi = true;
+                    added = true;
                     break;
                 }
             }
-            if (!chichi) {
-
+            if (!added) {
                 m_library.push_back(Shelf());
-                m_library.back().setMGenre(genre);
+                m_library.back().setMGenre(temp->m_genre);
                 m_library.back().add_book(temp);
             }
 
-            chichi = false;
-
+            added = false;
             m_nb_books += 1;
         }
-        m_dataset.close();
 
+        m_dataset.close();
         init_max_shelf();
-        cout << "total " << total << endl;
         m_nb_shelfs = m_library.size();
 
     } else {
@@ -81,10 +60,10 @@ Library::Library(string const &filename) {
 }
 
 
-
 Library::Library(const Library &lib) {
 
     m_library = lib.m_library;
+    m_nb_shelfs = m_library.size();
     m_filename = lib.m_filename;
     m_nb_books = lib.m_nb_books;
     m_max_shelf = lib.m_max_shelf;
@@ -97,9 +76,9 @@ void Library::init_max_shelf() {
     size_t big = 0;
     size_t temp = 0;
 
-    for (const auto &g : m_library) {
+    for (const auto &shelf : m_library) {
 
-        temp = g.getMShelf().size();
+        temp = shelf.nb_books();
         if (temp > big) {
             big = temp;
         }
@@ -114,18 +93,8 @@ void Library::print(std::ostream &flux) const {
     flux << "Contains:\n"
          << m_nb_books << " books \n"
          << m_nb_shelfs << " distinct genres\n" << endl;
-
-
 }
 
-template<typename KeyType, typename ValueType>
-pair<KeyType, ValueType>
-Library::get_max(const unordered_map<KeyType, ValueType> &x) {
-    using pairtype=pair<KeyType, ValueType>;
-    return *max_element(x.begin(), x.end(), [](const pairtype &p1, const pairtype &p2) {
-        return p1.second < p2.second;
-    });
-}
 
 void Library::print_genres_occurences() const {
 
@@ -137,13 +106,11 @@ void Library::print_genres_occurences() const {
 
 void Library::print_1book(Id_t id) const {
 
-    for (const auto &g : m_library) {
-        //C plutôt pas mal ce truc hahah car
-        //j'aurais du mal a dire quel est le type de retour
-        //hahahhahahahhahahahahahahha
-        auto temp = g.getMShelf().find(id);
+    for (const auto &shelf : m_library) {
 
-        if (temp != g.getMShelf().end()) {
+        auto temp = shelf.getMShelf().find(id);
+
+        if (temp != shelf.getMShelf().end()) {
             cout << *(temp->second) << endl;
             return;
         }
@@ -156,24 +123,39 @@ size_t Library::getNbShelfs() const {
     return m_nb_shelfs;
 }
 
-void Library::setNbShelfs(size_t nbShelfs) {
-    m_nb_shelfs = nbShelfs;
-}
 
 size_t Library::getNbBooks() const {
     return m_nb_books;
 }
 
-void Library::setNbBooks(size_t nbBooks) {
-    m_nb_books = nbBooks;
-}
 
 size_t Library::getBiggestShelf() const {
     return m_max_shelf;
 }
 
-void Library::setBiggestShelf(size_t biggestShelf) {
-    m_max_shelf = biggestShelf;
+
+Book *Library::extract_book(const std::string &line) {
+    static int end_id, end_title, end_author, end_date, end_genre;//end positions in .csv file
+    static string title, author, date, genre;
+    static int id;
+
+    end_id = line.find(';');
+    id = stol(line.substr(0, end_id), nullptr, 10);
+
+    end_title = line.find(';', end_id + 1);
+    title = line.substr(end_id + 1, end_title - (end_id + 1));
+
+    end_author = line.find(';', end_title + 1);
+    author = line.substr(end_title + 1, end_author - (end_title + 1));
+
+    end_date = line.find(';', end_author + 1);
+    date = line.substr(end_author + 1, end_date - (end_author + 1));
+
+    end_genre = line.find(';', end_date + 1);
+    genre = line.substr(end_date + 1, end_genre - (end_date + 1));
+
+    return new Book(title, author, date, genre, id);
+
 }
 
 
@@ -182,6 +164,4 @@ std::ostream &operator<<(std::ostream &os, const Library &library) {
     return os;
 }
 
-
-
-
+#pragma clang diagnostic pop

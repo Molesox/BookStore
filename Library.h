@@ -2,6 +2,9 @@
 // Created by Daniel on 25.04.2019.
 //
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
+
 #ifndef BOOKSTORE_LIBRARY_H
 #define BOOKSTORE_LIBRARY_H
 
@@ -34,28 +37,21 @@ public:
 
     void print(std::ostream &flux) const;
 
-    template<typename KeyType, typename ValueType>
-    std::pair<KeyType, ValueType> get_max(const std::unordered_map<KeyType, ValueType> &x);
-
     void init_max_shelf();
 
     void print_genres_occurences() const;
 
     void print_1book(Id_t id) const;
 
+    Book *extract_book(const std::string &line);
+
     //GETTERS & SETTERS
 
     size_t getNbShelfs() const;
 
-    void setNbShelfs(size_t nbShelfs);
-
     size_t getNbBooks() const;
 
-    void setNbBooks(size_t nbBooks);
-
     size_t getBiggestShelf() const;
-
-    void setBiggestShelf(size_t biggestShelf);
 
     //ATTRIBUTES
 
@@ -76,3 +72,5 @@ private:
 std::ostream &operator<<(std::ostream &os, const Library &library);
 
 #endif //BOOKSTORE_LIBRARY_H
+
+#pragma clang diagnostic pop
