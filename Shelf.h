@@ -46,6 +46,7 @@ public:
     //METHODS
 
     const size_t nb_books() const;
+
     void add_book(Book *book);
 
     Book *borrow(Id_t id);

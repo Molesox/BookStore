@@ -7,13 +7,13 @@
 using namespace std;
 
 void Shelf::add_book(Book *book) {
-    //TODO::comment lock proprement?
-    m_shelf[book->get_id()] = book;
 
+    WriteLock lock1(m_mutex);
+    m_shelf[book->get_id()] = book;
 }
 
 Book *Shelf::borrow(Id_t id) {
-    //TODO:: read and write lock ?
+    WriteLock lock1(m_mutex);
     Book *b = m_shelf[id];
     if (b->is_borrowed()) {
         cout << "unable to acces book" << endl;
@@ -69,16 +69,18 @@ Shelf::Shelf(const Shelf &a) {
 
 const std::string &Shelf::getMGenre() const {
     //TODO::readlock?
+    //I don't think is necessary because genre should not change after
+    //initialisation.
     return m_genre;
 }
 
 void Shelf::setMGenre(const std::string &mGenre) {
-    //TODO::write lock?
+    WriteLock lock1(m_mutex);
     m_genre = mGenre;
 }
 
 const hash_map_books_t &Shelf::getMShelf() const {
-    //TODO::read lock?
+    ReadLock lock1(m_mutex);
     return m_shelf;
 }
 
@@ -87,10 +89,10 @@ Shelf::~Shelf() {
         delete b.second;
     }
     m_shelf.clear();
-
 }
 
 const size_t Shelf::nb_books() const {
+    ReadLock lock1(m_mutex);
     return m_shelf.size();
 }
 

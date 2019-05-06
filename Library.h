@@ -66,6 +66,8 @@ private:
     size_t m_nb_books;
     size_t m_max_shelf;
 
+    std::string m_max_genre;
+
 
 };
 

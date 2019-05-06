@@ -11,10 +11,11 @@ int main() {
 
     Library l = Library(R"(..\book_dataset.csv)");
     cout << l;
+
     Id_t in;
-    while (cin >> in) {
+    while (cin >> in)
         l.print_1book(in);
-    }
+
 
     return 0;
 }

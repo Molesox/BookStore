@@ -72,6 +72,7 @@ Library::Library(const Library &lib) {
 }
 
 void Library::init_max_shelf() {
+
     m_max_shelf = 0;
     size_t big = 0;
     size_t temp = 0;
@@ -79,8 +80,11 @@ void Library::init_max_shelf() {
     for (const auto &shelf : m_library) {
 
         temp = shelf.nb_books();
+
         if (temp > big) {
+
             big = temp;
+            m_max_genre = shelf.getMGenre();
         }
     }
     m_max_shelf = big;
@@ -92,7 +96,9 @@ void Library::print(std::ostream &flux) const {
     flux << "The library loaded from : " << m_filename << endl;
     flux << "Contains:\n"
          << m_nb_books << " books \n"
-         << m_nb_shelfs << " distinct genres\n" << endl;
+         << m_nb_shelfs << " distinct genres\n"
+         << m_max_shelf << " occurences of genre : "
+         << m_max_genre << endl;
 }
 
 
