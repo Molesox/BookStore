@@ -6,19 +6,36 @@
 
 using namespace std;
 
+/**
+ * Given  a Book pointer as argument we add it to the shelf.
+ * There is no check for the Id. If there is another book in the shelf
+ * with the same Id it will be removed.
+ * @param pointer to the book to add.
+ */
 void Shelf::add_book(Book *book) {
 
     WriteLock lock1(m_mutex);
     m_shelf[book->get_id()] = book;
 }
 
+/**
+ * Returns a pointer to the book we want. If the book is not available
+ * nullptr is return. If its available it marks as not anymore.
+ * The number of reads of the book is increase by one.
+ * @param id of the book we want.
+ * @return pointer to the book or nullptr if is not available or inexistent.
+ */
 Book *Shelf::borrow(Id_t id) {
+
     WriteLock lock1(m_mutex);
     Book *b = m_shelf[id];
+
     if (b->is_borrowed()) {
-        cout << "unable to acces book" << endl;
+
+        cout << "unable to access book" << endl;
         return nullptr;
     }
+
     b->borrow();
     return b;
 }
@@ -79,7 +96,10 @@ Shelf::Shelf(const Shelf &a) {
     m_shelf = a.m_shelf;
 }
 
-
+/**
+ * A shelf is mainly defined by the genre.
+ * @return the genre
+ */
 const std::string &Shelf::getMGenre() const {
     //TODO:: Should we put a readlock here?
     //I don't think is necessary because genre should not change after
@@ -87,11 +107,19 @@ const std::string &Shelf::getMGenre() const {
     return m_genre;
 }
 
+/**
+ * Should be used only in the library creation.
+ * @param mGenre, a string.
+ */
 void Shelf::setMGenre(const std::string &mGenre) {
     WriteLock lock1(m_mutex);
     m_genre = mGenre;
 }
 
+/**
+ * This method is const, you cannot modify books inside.
+ * @return const reference to the unordered_map<Id, Book*> of the shelf.
+ */
 const hash_map_books_t &Shelf::getMShelf() const {
     ReadLock lock1(m_mutex);
     return m_shelf;
@@ -105,6 +133,10 @@ Shelf::~Shelf() {
     m_shelf.clear();
 }
 
+/**
+ * Number of books in the shelf.
+ * @return size_t
+ */
 const size_t Shelf::nb_books() const {
     ReadLock lock1(m_mutex);
     return m_shelf.size();
