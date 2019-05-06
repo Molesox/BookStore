@@ -68,7 +68,7 @@ Shelf::Shelf(const Shelf &a) {
 
 
 const std::string &Shelf::getMGenre() const {
-    //TODO::readlock?
+    //TODO:: Should we put a readlock here?
     //I don't think is necessary because genre should not change after
     //initialisation.
     return m_genre;
@@ -85,6 +85,7 @@ const hash_map_books_t &Shelf::getMShelf() const {
 }
 
 Shelf::~Shelf() {
+    //TODO: Should be the delete part in the book destructor instead ?
     for (auto b : m_shelf) {
         delete b.second;
     }
