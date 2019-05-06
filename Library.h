@@ -13,9 +13,7 @@
 #include <fstream>
 #include <string>
 
-
 #include "Shelf.h"
-
 
 typedef std::ifstream File;
 typedef std::vector<Shelf> library_t;

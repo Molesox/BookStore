@@ -32,6 +32,19 @@ Shelf::Shelf(Shelf &&shelf) noexcept {
 
 }
 
+/*
+ * We must use std::lock(m1, m2) to lock the two mutexes,
+ * instead of just locking them one after the other.
+ * If we lock them one after the other, then when two threads
+ * assign two objects in opposite order like :
+ *  Thread 1
+ *      x = std::move(y);
+ *  Thread 2
+ *      y = std::move(x);
+ * we could get a deadlock.
+ * Even if there is no reason to do so. This constructor must be
+ * explicit if we wanna put shelf() in a std::vector<>
+ */
 Shelf &Shelf::operator=(Shelf &&a) noexcept {
 
     if (this != &a) {
