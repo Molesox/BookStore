@@ -28,8 +28,6 @@ public:
 
     Library(const Library &lib);
 
-    ~Library() = default;
-
 
     //METHODS
 

@@ -28,6 +28,12 @@ void Shelf::add_book(Book *book) {
 Book *Shelf::borrow(Id_t id) {
 
     WriteLock lock1(m_mutex);
+
+    if (m_shelf.find(id) == m_shelf.end()) {
+        cout << "The book with id: " << id << " not found." << endl;
+        return nullptr;
+    }
+
     Book *b = m_shelf[id];
 
     if (b->is_borrowed()) {
@@ -35,8 +41,8 @@ Book *Shelf::borrow(Id_t id) {
         cout << "unable to access book" << endl;
         return nullptr;
     }
-
     b->borrow();
+
     return b;
 }
 
