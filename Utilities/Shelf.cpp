@@ -46,6 +46,16 @@ Book *Shelf::borrow(Id_t id) {
     return b;
 }
 
+const bool Shelf::book_exists(const Id_t id) const{
+    ReadLock lock1(m_mutex);
+
+    if (m_shelf.find(id) == m_shelf.end()) {
+        cerr << "The book with id " << id << " does not exist in this shelf." << endl;
+        return false;
+    }
+    return true;
+}
+
 Shelf::Shelf(Shelf &&shelf) noexcept {
 
     WriteLock rhs_lk(shelf.m_mutex);
@@ -106,7 +116,7 @@ Shelf::Shelf(const Shelf &a) {
  * A shelf is mainly defined by the genre.
  * @return the genre
  */
-const std::string &Shelf::getMGenre() const {
+const std::string Shelf::getMGenre() const {
     //TODO:: Should we put a readlock here?
     //I don't think is necessary because genre should not change after
     //initialisation.

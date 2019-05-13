@@ -43,9 +43,9 @@ public:
 
     Book *extract_book(const std::string &line);
 
-    bool book_exist(const std::string &genreRequest, Id_t id);
+    const bool book_exists(const std::string& genre, const Id_t id) const;
 
-    //GETTERS & SETTERS
+    //GETTERS && SETTERS
 
     size_t getNbShelfs() const;
 
@@ -53,6 +53,9 @@ public:
 
     size_t getBiggestShelf() const;
 
+    int getMNbPlaces() const;
+
+    void setMNbPlaces(int mNbPlaces);
 
     //ATTRIBUTES
 

@@ -13,7 +13,7 @@ int main() {
 
     Id_t in;
     while (cin >> in)
-        l.exist(in, "Roman");
+        l.print_1book(in);
 
 
     return 0;
