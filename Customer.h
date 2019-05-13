@@ -5,24 +5,32 @@
 #ifndef BOOKSTORE_CUSTOMER_H
 #define BOOKSTORE_CUSTOMER_H
 
+#include <mutex>
 #include <vector>
 #include <string>
-#include "Book.h"
-#include "Library.h"
+#include "Utilities/Book.h"
 
-typedef unsigned long int Id_t;
-
+using MutexType = std::mutex;
+using WriteLock = std::unique_lock<MutexType>;
 
 class Customer {
-    Customer(const Library *lib, const std::string &interest_genre, u_int quantity);
+
+public:
+
+    MutexType lck_custom;
+
+    std::string genre_request;
+
+    std::vector<Id_t> m_Id_requests;
+    std::vector<Id_t> m_demands;
+
+    std::vector<Book> m_my_books;
+    std::vector<Book> m_read;
+
+    bool new_books;
+    bool return_book;
+
 
 private:
-    static Id_t m_id;
-    const Library *m_lib;//Customer isn't allowed to modify the lib.
-    unsigned int m_read_books;
-    std::vector<Book> m_to_read;
-    std::vector<Book *> *m_requets_books;
 };
-
-
 #endif //BOOKSTORE_CUSTOMER_H

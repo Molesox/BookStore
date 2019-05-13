@@ -164,6 +164,14 @@ Book *Library::extract_book(const std::string &line) {
 
 }
 
+void Library::setMNbPlaces(int mNbPlaces) {
+    m_nb_places = mNbPlaces;
+}
+
+int Library::getMNbPlaces() const {
+    return m_nb_places;
+}
+
 
 std::ostream &operator<<(std::ostream &os, const Library &library) {
     library.print(os);

@@ -12,8 +12,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <queue>
 
 #include "Shelf.h"
+
 
 typedef std::ifstream File;
 typedef std::vector<Shelf> library_t;
@@ -49,6 +51,10 @@ public:
 
     size_t getBiggestShelf() const;
 
+    int getMNbPlaces() const;
+
+    void setMNbPlaces(int mNbPlaces);
+
     //ATTRIBUTES
 
 private:
@@ -63,6 +69,17 @@ private:
     size_t m_max_shelf;
 
     std::string m_max_genre;
+
+    int m_nbDropsOff;
+
+    int m_nb_sellers;//only one, John
+    int m_nb_places;
+
+
+private:
+
+    std::queue<int> m_waiting_customers;
+    std::queue<int> m_waiting_sellers;
 
 
 };

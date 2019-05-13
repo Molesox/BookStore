@@ -38,7 +38,7 @@ Book *Shelf::borrow(Id_t id) {
 
     if (b->is_borrowed()) {
 
-        cout << "unable to access book" << endl;
+        cout << "Unable to access book" << endl;
         return nullptr;
     }
     b->borrow();
