@@ -114,6 +114,7 @@ void Library::print_1book(Id_t id) const {
 
     for (const auto &shelf : m_library) {
 
+
         auto temp = shelf.getMShelf().find(id);
 
         if (temp != shelf.getMShelf().end()) {
@@ -123,6 +124,8 @@ void Library::print_1book(Id_t id) const {
     }
     cout << "Book not found" << endl;
 }
+
+
 //GETTERS & SETTERS
 
 size_t Library::getNbShelfs() const {
@@ -164,14 +167,9 @@ Book *Library::extract_book(const std::string &line) {
 
 }
 
-void Library::setMNbPlaces(int mNbPlaces) {
-    m_nb_places = mNbPlaces;
+bool Library::book_exist(const std::string &genreRequest, Id_t id) {
+    return false;
 }
-
-int Library::getMNbPlaces() const {
-    return m_nb_places;
-}
-
 
 std::ostream &operator<<(std::ostream &os, const Library &library) {
     library.print(os);
