@@ -26,7 +26,7 @@ public:
 
     bool ask_book();
 
-    void return_book();
+    int return_book();
 
     void read_book();
 
@@ -47,6 +47,7 @@ public:
     bool m_return_book;
 
     c_states m_state;
+    Id_t m_id;
 
 private:
 
