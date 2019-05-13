@@ -123,6 +123,19 @@ void Library::print_1book(Id_t id) const {
     }
     cout << "Book not found" << endl;
 }
+
+const bool Library::book_exists(const std::string& genre, const Id_t id) const {
+    string lg;
+    for(const auto &s : m_library){
+        lg = s.getMGenre();
+        if(lg.substr(0, lg.size() - 1) == genre) {
+            return s.book_exists(id);
+        }
+    }
+    cerr << "Genre " << genre << " not found." << endl;
+    return false;
+}
+
 //GETTERS & SETTERS
 
 size_t Library::getNbShelfs() const {

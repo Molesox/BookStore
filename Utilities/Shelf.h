@@ -51,14 +51,15 @@ public:
 
     Book *borrow(Id_t id);
 
+    const bool book_exists(Id_t id) const;
+
     //GETTERS & SETTERS
 
-    const std::string &getMGenre() const;
+    const std::string getMGenre() const;
 
     void setMGenre(const std::string &mGenre);
 
     const hash_map_books_t &getMShelf() const;
-
 };
 
 

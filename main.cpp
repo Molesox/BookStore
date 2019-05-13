@@ -13,8 +13,6 @@ int main() {
 
     Id_t in;
     while (cin >> in)
-        l.print_1book(in);
-
-
+        cout << l.book_exists("Young adult literature", in) << endl;
     return 0;
 }
