@@ -53,9 +53,9 @@ public:
 
     size_t getBiggestShelf() const;
 
-    int getMNbPlaces() const;
 
-    void setMNbPlaces(int mNbPlaces);
+
+
 
     //ATTRIBUTES
 
