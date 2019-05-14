@@ -1,11 +1,12 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "performance-unnecessary-value-param"
+
 //
 // Created by Daniel on 24.04.2019.
 //
 
-#include "Book.h"
 #include <iostream>
+#include <utility>
+
+#include "Book.h"
 
 using namespace std;
 Id_t Book::id = 0;
@@ -15,10 +16,10 @@ Id_t Book::id = 0;
 Book::Book(std::string name, std::string author,
            std::string date, std::string genre, Id_t wiki_id, int nb_reads) {
 
-    m_name = name;
-    m_author = author;
-    m_date = date;
-    m_genre = genre;
+    m_name = std::move(name);
+    m_author = std::move(author);
+    m_date = std::move(date);
+    m_genre = std::move(genre);
     m_wiki_id = wiki_id;
     m_nb_reads = nb_reads;
     m_is_borrowed = false;
@@ -81,6 +82,3 @@ ostream &operator<<(ostream &os, const Book &book) {
     book.print(os);
     return os;
 }
-
-
-#pragma clang diagnostic pop

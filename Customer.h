@@ -23,6 +23,8 @@ class Customer {
 
 public:
 
+    Customer(Shop *shop, std::string interestGenre, int nb_books);
+
     int visit_shop();
 
     bool ask_book();
@@ -48,7 +50,7 @@ public:
     bool m_return_book;
 
     c_states m_state;
-    Id_t m_id;
+    static Id_t m_id;
 
 private:
 

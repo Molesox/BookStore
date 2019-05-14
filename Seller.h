@@ -13,6 +13,9 @@ class Customer;
 class Seller {
 
 public:
+
+    Seller(Shop *shop);
+
     void give_book();
 
     void get_back_book();

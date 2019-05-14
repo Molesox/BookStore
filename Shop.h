@@ -19,6 +19,8 @@ class Customer;
 class Shop {
 public:
 
+    Shop(Library *lib, size_t nb_places, size_t max_books);
+
     int add_customer(Customer *c);
 
 

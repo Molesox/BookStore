@@ -47,7 +47,7 @@ public:
 
     void unborrow(const Book &b);
 
-    const bool book_exists(const std::string& genre, const Id_t id) const;
+    const bool book_exists(const std::string &genre, Id_t id) const;
 
     //GETTERS && SETTERS
 
