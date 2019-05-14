@@ -33,6 +33,8 @@ public:
 
     void read_book();
 
+    void init_request(int nb_books);
+
     Shop *m_shop;
     Library *m_lib;
 
