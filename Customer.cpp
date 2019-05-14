@@ -88,4 +88,8 @@ int Customer::return_book() {
     return -1;//or not.
 }
 
-
+void Customer::init_request(int nb_books){
+    for(int i = 0; i < nb_books; i++){
+        m_my_books.push_back(m_shop->m_lib->borrow(m_demands[i], m_genre_request));
+    }
+}
