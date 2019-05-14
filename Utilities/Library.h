@@ -43,6 +43,8 @@ public:
 
     Book *extract_book(const std::string &line);
 
+    Book borrow(Id_t id, std::string genre);
+
     const bool book_exists(const std::string& genre, const Id_t id) const;
 
     //GETTERS && SETTERS
@@ -53,9 +55,9 @@ public:
 
     size_t getBiggestShelf() const;
 
-    int getMNbPlaces() const;
 
-    void setMNbPlaces(int mNbPlaces);
+
+
 
     //ATTRIBUTES
 
@@ -72,16 +74,6 @@ private:
 
     std::string m_max_genre;
 
-    int m_nbDropsOff;
-
-    int m_nb_sellers;//only one, John
-    int m_nb_places;
-
-
-private:
-
-    std::queue<int> m_waiting_customers;
-    std::queue<int> m_waiting_sellers;
 
 };
 

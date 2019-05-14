@@ -177,12 +177,14 @@ Book *Library::extract_book(const std::string &line) {
 
 }
 
-void Library::setMNbPlaces(int mNbPlaces) {
-    m_nb_places = mNbPlaces;
-}
-
-int Library::getMNbPlaces() const {
-    return m_nb_places;
+Book Library::borrow(Id_t id, std::string genre) {
+    string lg;
+    for (auto &s : m_library) {
+        lg = s.getMGenre();
+        if (lg.substr(0, lg.size() - 1) == genre) {
+            return s.borrow(id);
+        }
+    }
 }
 
 

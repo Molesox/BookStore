@@ -49,7 +49,7 @@ public:
 
     void add_book(Book *book);
 
-    Book *borrow(Id_t id);
+    std::pair<Book, bool> borrow(Id_t id);
 
     const bool book_exists(Id_t id) const;
 

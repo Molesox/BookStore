@@ -9,17 +9,33 @@
 #include <vector>
 #include <string>
 #include "Utilities/Book.h"
+#include "Shop.h"
 
 using MutexType = std::mutex;
 using WriteLock = std::unique_lock<MutexType>;
+
+typedef enum states {
+    InQueue, Wait, Asking, Reading
+} c_states;
 
 class Customer {
 
 public:
 
+    int visit_shop();
+
+    bool ask_book();
+
+    int return_book();
+
+    void read_book();
+
+    Shop *m_shop;
+    Library *m_lib;
+
     MutexType lck_custom;
 
-    std::string genre_request;
+    std::string m_genre_request;
 
     std::vector<Id_t> m_Id_requests;
     std::vector<Id_t> m_demands;
@@ -27,10 +43,13 @@ public:
     std::vector<Book> m_my_books;
     std::vector<Book> m_read;
 
-    bool new_books;
-    bool return_book;
+    bool m_new_books;
+    bool m_return_book;
 
+    c_states m_state;
+    Id_t m_id;
 
 private:
+
 };
 #endif //BOOKSTORE_CUSTOMER_H
