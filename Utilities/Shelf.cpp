@@ -5,8 +5,6 @@
 #include "Shelf.h"
 
 using namespace std;
-static Book falsebook("", "", "", "", -1, -1);
-
 
 /**
  * Given  a Book pointer as argument we add it to the shelf.
@@ -27,13 +25,13 @@ void Shelf::add_book(Book *book) {
  * @param id of the book we want.
  * @return pointer to the book or nullptr if is not available or inexistent.
  */
-pair<Book, bool> Shelf::borrow(Id_t id) {
+Book *Shelf::borrow(Id_t id) {
 
     WriteLock lock1(m_mutex);
 
     if (m_shelf.find(id) == m_shelf.end()) {
         cout << "The book with id: " << id << " not found." << endl;
-        return make_pair(falsebook, false);
+        return nullptr;
     }
 
     Book *b = m_shelf[id];
@@ -41,14 +39,14 @@ pair<Book, bool> Shelf::borrow(Id_t id) {
     if (b->is_borrowed()) {
 
         cout << "Unable to access book" << endl;
-        return make_pair(falsebook, false);
+        return nullptr;
     }
     b->borrow();
-    Book bb = *b;
-    return make_pair(bb, true);
+
+    return b;
 }
 
-const bool Shelf::book_exists(const Id_t id) const{
+const bool Shelf::book_exists(const Id_t id) const {
     ReadLock lock1(m_mutex);
 
     if (m_shelf.find(id) == m_shelf.end()) {
@@ -158,5 +156,16 @@ Shelf::~Shelf() {
 const size_t Shelf::nb_books() const {
     ReadLock lock1(m_mutex);
     return m_shelf.size();
+}
+
+void Shelf::unborrow(Id_t id) {
+
+    WriteLock lck(m_mutex);
+
+    if (m_shelf.find(id) == m_shelf.end()) {
+        cout << "The book with id: " << id << " can't be unborrow" << endl;
+    } else {
+        m_shelf[id]->unborrow();
+    }
 }
 

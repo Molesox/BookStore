@@ -15,6 +15,7 @@ using MutexType = std::mutex;
 using WriteLock = std::unique_lock<MutexType>;
 using CV = std::condition_variable;
 
+class Customer;
 class Shop {
 public:
 

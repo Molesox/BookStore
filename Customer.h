@@ -18,6 +18,7 @@ typedef enum states {
     InQueue, Wait, Asking, Reading
 } c_states;
 
+class Shop;
 class Customer {
 
 public:

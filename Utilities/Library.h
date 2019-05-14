@@ -43,7 +43,9 @@ public:
 
     Book *extract_book(const std::string &line);
 
-    Book borrow(Id_t id, std::string genre);
+    Book borrow(Id_t id, const std::string &genre);
+
+    void unborrow(const Book &b);
 
     const bool book_exists(const std::string& genre, const Id_t id) const;
 

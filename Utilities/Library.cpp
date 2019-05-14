@@ -5,8 +5,7 @@
 #include "Library.h"
 #include <iostream>
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
+
 using namespace std;
 
 //CONSTRUCTORS
@@ -124,11 +123,11 @@ void Library::print_1book(Id_t id) const {
     cout << "Book not found" << endl;
 }
 
-const bool Library::book_exists(const std::string& genre, const Id_t id) const {
+const bool Library::book_exists(const std::string &genre, const Id_t id) const {
     string lg;
-    for(const auto &s : m_library){
+    for (const auto &s : m_library) {
         lg = s.getMGenre();
-        if(lg.substr(0, lg.size() - 1) == genre) {
+        if (lg.substr(0, lg.size() - 1) == genre) {
             return s.book_exists(id);
         }
     }
@@ -177,12 +176,27 @@ Book *Library::extract_book(const std::string &line) {
 
 }
 
-Book Library::borrow(Id_t id, std::string genre) {
+Book Library::borrow(Id_t id, const std::string &genre) {
     string lg;
     for (auto &s : m_library) {
         lg = s.getMGenre();
         if (lg.substr(0, lg.size() - 1) == genre) {
-            return s.borrow(id);
+            //TODO: Check if b is not null.
+            //TODO: Check if the copy constructor maintains the Id.
+            Book b = *s.borrow(id);
+            return b;
+        }
+    }
+    cerr << "Impossible to borrow id "
+         << id << " with genre :" << genre << endl;
+}
+
+void Library::unborrow(const Book &b) {
+    string lg;
+    for (auto &s : m_library) {
+        lg = s.getMGenre();
+        if (lg.substr(0, lg.size() - 1) == b.m_genre) {
+            s.unborrow(b.get_id());
         }
     }
 }
@@ -193,4 +207,3 @@ std::ostream &operator<<(std::ostream &os, const Library &library) {
     return os;
 }
 
-#pragma clang diagnostic pop
