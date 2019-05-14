@@ -5,6 +5,8 @@
 #include "Shelf.h"
 
 using namespace std;
+static Book falsebook("", "", "", "", -1, -1);
+
 
 /**
  * Given  a Book pointer as argument we add it to the shelf.
@@ -25,13 +27,13 @@ void Shelf::add_book(Book *book) {
  * @param id of the book we want.
  * @return pointer to the book or nullptr if is not available or inexistent.
  */
-Book *Shelf::borrow(Id_t id) {
+pair<Book, bool> Shelf::borrow(Id_t id) {
 
     WriteLock lock1(m_mutex);
 
     if (m_shelf.find(id) == m_shelf.end()) {
         cout << "The book with id: " << id << " not found." << endl;
-        return nullptr;
+        return make_pair(falsebook, false);
     }
 
     Book *b = m_shelf[id];
@@ -39,11 +41,11 @@ Book *Shelf::borrow(Id_t id) {
     if (b->is_borrowed()) {
 
         cout << "Unable to access book" << endl;
-        return nullptr;
+        return make_pair(falsebook, false);
     }
     b->borrow();
-
-    return b;
+    Book bb = *b;
+    return make_pair(bb, true);
 }
 
 const bool Shelf::book_exists(const Id_t id) const{

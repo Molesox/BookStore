@@ -11,11 +11,14 @@
 class Customer;
 
 class Seller {
+
 public:
     void give_book();
 
     void get_back_book();
 
+
+    Shop *m_shop;
 private:
 };
 

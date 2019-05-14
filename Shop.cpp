@@ -8,7 +8,7 @@
 int Shop::add_customer(Customer *c) {
 
     WriteLock s_lck(lck_shop);
-    if (nb_place > m_customers.size()) return -1;
+    if (m_nb_place > m_customers.size()) return -1;
 
     bool found = false;
     for (auto cust : m_customers) {

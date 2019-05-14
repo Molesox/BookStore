@@ -7,7 +7,9 @@
 
 #include <vector>
 #include <condition_variable>
+#include "Utilities/Library.h"
 #include "Customer.h"
+
 
 using MutexType = std::mutex;
 using WriteLock = std::unique_lock<MutexType>;
@@ -20,7 +22,11 @@ public:
 
 
     std::vector<Customer *> m_customers;
-    size_t nb_place;
+
+    Library *m_lib;
+
+    size_t m_nb_place;
+    size_t m_max_books;
 
     MutexType lck_shop;
 
