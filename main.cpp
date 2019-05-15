@@ -16,26 +16,43 @@ void custom_thread(Customer *c) {
     c->return_book();
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-noreturn"
 void john_thread(Seller *s) {
-    s->give_book();
-    s->get_back_book();
+    while (true) {
+        s->give_book();
+        s->get_back_book();
+    }
+
+
 }
+
+#pragma clang diagnostic pop
 
 int main() {
 
     Library *l = new Library(R"(..\book_dataset.csv)");
-    cout << *l;
+    cout << *l << endl << endl;
 
-    Shop *migros = new Shop(l, 2, 3);
+    Shop *migros = new Shop(l, 2, 2);
 
-    Customer one(migros, "unknown", 2);
+    thread c_threads[5];
+    for (int i = 0; i < 5; ++i) {
+        int a[] = {500 + i, 600 - i};
+        c_threads[i] = thread(custom_thread, new Customer(migros, "unknown", 2, a));
+    }
+
+
+
     Seller john(migros);
-    thread CACA(john_thread, &john);
-    thread CUCU(custom_thread, &one);
+    thread t_JOHN(john_thread, &john);
+
+    for (auto &c_thread : c_threads) {
+        c_thread.join();
+    }
+    t_JOHN.join();
 
 
-    CUCU.join();
-    CACA.join();
 
 
     return 0;

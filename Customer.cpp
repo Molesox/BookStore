@@ -9,9 +9,9 @@
 
 using namespace std;
 
-Id_t Customer::m_id = 0;
+Id_t Customer::c_id = 0;
 
-Customer::Customer(Shop *shop, string interestGenre, int nb_books) {
+Customer::Customer(Shop *shop, string interestGenre, int nb_books, int ids[]) {
 
     m_lib = shop->m_lib;
     m_shop = shop;
@@ -21,9 +21,14 @@ Customer::Customer(Shop *shop, string interestGenre, int nb_books) {
     m_my_books = vector<Book>();
     m_read = vector<Book>();
     m_state = Wait;
-    m_id++;
-    m_Id_requests.push_back(500);
-    m_Id_requests.push_back(501);
+    c_id++;
+    m_id = c_id;
+
+    for (int i = 0; i < 2; ++i) {
+        m_Id_requests.push_back(ids[i]);
+    }
+
+
 
     //init_requests(nb_books)
 
@@ -36,9 +41,11 @@ int Customer::visit_shop() {
     if (m_shop->add_customer(this) == 0) {//the shop is locked internally.
 
         WriteLock s_lck(m_shop->lck_shop);
-
         m_shop->cv_added.wait(s_lck, [this] { return m_state == InQueue; });//wait for confirmation.
-        std::cout << "Customer id : " << m_id << " visits shop" << std::endl;
+
+        std::cout << "Customer[" << m_id << "] visits shop. visit_shop()" << std::endl;
+
+        s_lck.unlock();
         return 0;
     }
     return -1;
@@ -46,7 +53,7 @@ int Customer::visit_shop() {
 
 bool Customer::ask_book() {
 
-    WriteLock custom_lock(lck_custom);//lock the customer
+    WriteLock custom_lock(lck_custom);//lock the customer, may be useless
 
     bool reAsk = false;//In case he has to re-ask some books
 
@@ -56,36 +63,37 @@ bool Customer::ask_book() {
         if (m_lib->book_exists(m_genre_request, request)) {//If the books exists,
 
             m_demands.push_back(request);//then it's a demand.
+
         } else {
             reAsk = true;
             cerr << "You are asking for inexistent book. Id : "
                  << request << endl;
         }
     }
+
     m_state = Asking;//change he's state.
     custom_lock.unlock();//Manual unlocking is done before notifying, to avoid waking up
 
-    m_shop->cv_seller.notify_one();//notify the seller that
+    m_shop->seller.notify();//notify the seller that
     //he has some books demands
 
-    //  custom_lock.lock();//may be useless...
 
 
-    {
-        WriteLock s_lck(m_shop->lck_shop);//Waits for the seller.
+    WriteLock s_lck(m_shop->lck_shop);//Waits for the seller.
+    m_shop->cv_custom.wait(s_lck, [this] { return m_new_books; });//bool flag.
 
-        m_shop->cv_custom.wait(s_lck, [this] { return m_new_books; });//bool flag.
+    std::cout << "Customer[" << m_id << "] successfully get new books. ask_book()" << std::endl;
+    s_lck.unlock();
 
-        std::cout << "Customer id : " << m_id << " succesfully ask for book." << std::endl;
-    }
     m_state = Reading;
     m_new_books = false;
+
     return reAsk;
 }
 
 void Customer::read_book() {
 
-    // WriteLock custom_lock(lck_custom);//Lock customer. May be useless.
+    WriteLock lock1(lck_custom);
 
     if (m_state == Reading) {
 
@@ -95,28 +103,33 @@ void Customer::read_book() {
         m_my_books.erase(m_my_books.begin(), m_my_books.end());
 
         usleep(1000);//He reads really quickly
-        m_return_book = true;//He have books to return.
+
+        m_return_book = true;//He have books to return.Bool flag for Seller
+        std::cout << "Customer[" << m_id << "] has read. read_book()" << std::endl;
+
     }
+    lock1.unlock();
 }
 
 int Customer::return_book() {
 
-    // WriteLock custom_lock(lck_custom);//Lock customer. May be useless.
+
     lck_custom.unlock();
     if (m_return_book) {//If he has books to return,
 
-        m_shop->cv_return_seller.notify_one();//Notify the seller
+        m_shop->return_seller.notify();//Notify the seller
 
         WriteLock shop_lock(m_shop->lck_shop);//And wait that the seller
-
         m_shop->cv_return_custom.wait(shop_lock, [this] { return !m_return_book; });//takes back the
+
+        std::cout << "Customer[" << m_id << "] successfully returned books. return_book()" << std::endl;
 
         //books. The seller informs using the bool m_return_book flag that the
         //customer has returned all the books.
 
         if (m_Id_requests.empty()) {//Informs the main if,
             return 0;//yes : he has finish to ask, read and return books.
-            cout << "uuuuuuuuuuuuuuu" << endl;
+
         }
 
     }
