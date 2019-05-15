@@ -14,22 +14,25 @@ Seller::Seller(Shop *shop) {
 
 void Seller::give_book() {
 
+
+    m_shop->seller.wait();//Waits notification from the Customer
+
     WriteLock s_lock(m_shop->lck_shop);
-    m_shop->cv_seller.wait(s_lock);//Waits notification from the Customer
-
     for (auto c : m_shop->m_customers) {//for each customer
-        cout << "pute" << endl;
-        if (c->lck_custom.try_lock()) {//if we can lock him
-
-            for (int i = 0; i < m_shop->m_max_books; ++i) {//we give him the max possible nb of books
-                if (m_shop->m_lib->book_exists(c->m_genre_request, c->m_demands[i])) {//only if they exist
-                    c->m_my_books.push_back(m_shop->m_lib->borrow(c->m_demands[i], c->m_genre_request));
-                    c->m_new_books = true;//bool flag to notify the customer thread that he
-                    // must return the books some day.
+        WriteLock c_lck(c->lck_custom, try_to_lock);
+        if (c_lck.owns_lock()) {//if we can lock him
+            if (c->m_state == Asking) {//if the customer is asking for books
+                for (int i = 0; i < m_shop->m_max_books; ++i) {//we give him the max possible nb of books
+                    if (m_shop->m_lib->book_exists(c->m_genre_request, c->m_demands[i])) {//only if they exist
+                        c->m_my_books.push_back(m_shop->m_lib->borrow(c->m_demands[i], c->m_genre_request));
+                        c->m_new_books = true;//bool flag to notify the customer thread that he
+                        // has new books.
+                    }
                 }
-
             }
+            c_lck.unlock();
         }
+
     }
     s_lock.unlock();
     m_shop->cv_custom.notify_all();//we notify all the customers waiting for books.
@@ -38,15 +41,16 @@ void Seller::give_book() {
 void Seller::get_back_book() {
     bool done = false;
 
-    WriteLock s_lock(m_shop->lck_shop);//We lock the shop to access customers
-    m_shop->cv_return_seller.wait(s_lock);//We wait for returns from customers
 
+    m_shop->return_seller.wait();//We wait for returns from customers
+
+    WriteLock s_lock(m_shop->lck_shop);//We lock the shop to access customers
     for (auto &c : m_shop->m_customers) {//For each customer in the shop,
 
         WriteLock lck(c->lck_custom, try_to_lock);
 
         if (lck.owns_lock()) {//We try to lock him. If yes,
-            cout << "je suis une petit cochone " << endl;
+
             if (c->m_return_book) {//We check that he has some books to return.
 
                 done = true;//we need to do it at least once to notify the customers
@@ -62,8 +66,10 @@ void Seller::get_back_book() {
                 // that the books have been returned.
                 // c->lck_custom.unlock();
             }
+            lck.unlock();
         }
     }
+    s_lock.unlock();
     if (done) {
 
         m_shop->cv_return_custom.notify_all();//notify the waiting customers.

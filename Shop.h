@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include "Utilities/Library.h"
 #include "Customer.h"
+#include "Utilities/Semaphore.h"
 
 
 using MutexType = std::mutex;
@@ -22,6 +23,7 @@ public:
     Shop(Library *lib, size_t nb_places, size_t max_books);
 
     int add_customer(Customer *c);
+
 
 
     std::vector<Customer *> m_customers;
@@ -38,6 +40,9 @@ public:
     CV cv_seller;
     CV cv_return_custom;
     CV cv_return_seller;
+
+    Semaphore seller;
+    Semaphore return_seller;
 
 
 };

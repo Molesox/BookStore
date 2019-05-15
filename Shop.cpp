@@ -23,8 +23,8 @@ int Shop::add_customer(Customer *c) {
 
 
     bool found = false;
-    for (auto &cust : m_customers) {//Checks if the customer is not already inside.
-        if (cust->m_id == c->m_id) {
+    for (auto &customer : m_customers) {//Checks if the customer is not already inside.
+        if (customer->m_id == c->m_id) {
             found = true;
             break;
         }
@@ -33,9 +33,11 @@ int Shop::add_customer(Customer *c) {
 
     m_customers.push_back(c);//add the customer to the shop.
     c->m_state = InQueue;
+
     s_lck.unlock();//frees the shop
+
     cv_added.notify_all();//and notify the customer that he's inside.
-    std::cout << "Customer id : " << c->m_id << " added" << std::endl;
+    std::cout << "Customer[" << c->m_id << "] added to the shop. add_customer()" << std::endl;
+
     return 0;
 }
-
