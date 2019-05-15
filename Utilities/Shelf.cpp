@@ -169,3 +169,9 @@ void Shelf::unborrow(Id_t id) {
     }
 }
 
+const id_t Shelf::get_next_book_id(int after) {
+    auto it = m_shelf.begin(after);
+    it++;
+    return it->first;
+}
+

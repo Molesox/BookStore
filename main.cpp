@@ -37,6 +37,5 @@ int main() {
     CUCU.join();
     CACA.join();
 
-
     return 0;
 }

@@ -57,7 +57,7 @@ public:
 
     size_t getBiggestShelf() const;
 
-
+    Shelf get_shelf_by_genre(std::string genre);
 
 
 

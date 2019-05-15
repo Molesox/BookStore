@@ -56,5 +56,7 @@ public:
 
 private:
 
+    id_t last_read;
+
 };
 #endif //BOOKSTORE_CUSTOMER_H
