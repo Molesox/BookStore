@@ -13,6 +13,7 @@ Id_t Customer::c_id = 0;
 
 Customer::Customer(Shop *shop, string interestGenre, int nb_books, int ids[]) {
 
+    last_read = -1;
     m_lib = shop->m_lib;
     m_shop = shop;
     m_genre_request = std::move(interestGenre);
@@ -133,5 +134,20 @@ int Customer::return_book() {
     return -1;//or not.
 }
 
+void Customer::init_request(int nb_books){ //add nb_books random book ids to the request vector of this customer
+    WriteLock shop_lock(m_shop->lck_shop);  //TODO : change for a readlock
+    Shelf s = m_shop->m_lib->get_shelf_by_genre(m_genre_request);
 
+    //Add nb_books, if there are less books in the shelf, add all of them anyway
+    int n = nb_books;
+    if(s.nb_books() < nb_books)
+        n = s.nb_books();
+
+    //retrieve book ids and add them to the list of requests
+    for(int i = 0; i < n; i++){
+        id_t temp = s.get_next_book_id(last_read);
+        last_read = temp;
+        m_Id_requests.push_back(temp);
+    }
+}
 

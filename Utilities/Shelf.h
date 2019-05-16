@@ -62,6 +62,9 @@ public:
     void setMGenre(const std::string &mGenre);
 
     const hash_map_books_t &getMShelf() const;
+
+    const id_t get_next_book_id(int after);
+
 };
 
 

@@ -200,6 +200,18 @@ void Library::unborrow(const Book &b) {
     }
 }
 
+Shelf Library::get_shelf_by_genre(const std::string genre) {
+    string lg;
+    for (const auto &s : m_library) {
+        lg = s.getMGenre();
+        if (lg.substr(0, lg.size() - 1) == genre) {
+            return s;
+        }
+    }
+    cerr << "get_shelf_by_genre could not find the genre : "
+        << genre << endl;
+}
+
 
 std::ostream &operator<<(std::ostream &os, const Library &library) {
     library.print(os);
