@@ -182,7 +182,6 @@ Book Library::borrow(Id_t id, const std::string &genre) {
         lg = s.getMGenre();
         if (lg.substr(0, lg.size() - 1) == genre) {
             //TODO: Check if b is not null.
-            //TODO: Check if the copy constructor maintains the Id.
             Book b = *s.borrow(id);
             return b;
         }

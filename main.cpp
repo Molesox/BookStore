@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include <unistd.h>
 #include "Utilities/Library.h"
 #include "Shop.h"
 #include "Seller.h"
@@ -34,18 +35,20 @@ int main() {
     Library *l = new Library(R"(..\book_dataset.csv)");
     cout << *l << endl << endl;
 
-    Shop *migros = new Shop(l, 2, 2);
+    Shop *migros = new Shop(l, 20, 2);
 
-    thread c_threads[5];
-    for (int i = 0; i < 5; ++i) {
+    Seller john(migros);
+    thread t_JOHN(john_thread, &john);
+
+    thread c_threads[6];
+    for (int i = 0; i < 6; ++i) {
+        if (i == 4) {
+            usleep(1000);
+        }
         int a[] = {500 + i, 600 - i};
         c_threads[i] = thread(custom_thread, new Customer(migros, "unknown", 2, a));
     }
 
-
-
-    Seller john(migros);
-    thread t_JOHN(john_thread, &john);
 
     for (auto &c_thread : c_threads) {
         c_thread.join();

@@ -21,7 +21,6 @@ int Shop::add_customer(Customer *c) {
     if (m_nb_place < m_customers.size()) return -1;//Check if there
     // is place in the shop.
 
-
     bool found = false;
     for (auto &customer : m_customers) {//Checks if the customer is not already inside.
         if (customer->m_id == c->m_id) {
@@ -37,7 +36,6 @@ int Shop::add_customer(Customer *c) {
     s_lck.unlock();//frees the shop
 
     cv_added.notify_all();//and notify the customer that he's inside.
-    std::cout << "Customer[" << c->m_id << "] added to the shop. add_customer()" << std::endl;
 
     return 0;
 }

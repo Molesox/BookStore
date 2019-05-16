@@ -142,7 +142,6 @@ const hash_map_books_t &Shelf::getMShelf() const {
 }
 
 Shelf::~Shelf() {
-    //TODO: Should be the delete part in the book destructor instead ?
     for (auto b : m_shelf) {
         delete b.second;
     }

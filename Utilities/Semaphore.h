@@ -10,33 +10,29 @@
 #include <condition_variable>
 
 class Semaphore {
-private:
-    std::mutex mutex_;
-    std::condition_variable condition_;
-    unsigned long count_ = 0; // Initialized as locked.
-
 public:
-    void notify() {
-        std::lock_guard<decltype(mutex_)> lock(mutex_);
-        ++count_;
-        condition_.notify_one();
+    Semaphore(int count_ = 0)
+            : count(count_) {}
+
+    inline void notify() {
+        std::unique_lock<std::mutex> lock(mtx);
+        count++;
+        cv.notify_one();
     }
 
-    void wait() {
-        std::unique_lock<decltype(mutex_)> lock(mutex_);
-        while (!count_) // Handle spurious wake-ups.
-            condition_.wait(lock);
-        --count_;
-    }
+    inline void wait() {
+        std::unique_lock<std::mutex> lock(mtx);
 
-    bool try_wait() {
-        std::lock_guard<decltype(mutex_)> lock(mutex_);
-        if (count_) {
-            --count_;
-            return true;
+        while (count == 0) {
+            cv.wait(lock);
         }
-        return false;
+        count--;
     }
+
+private:
+    std::mutex mtx;
+    std::condition_variable cv;
+    int count;
 };
 
 #endif //BOOKSTORE_SEMAPHORE_H
