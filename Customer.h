@@ -59,5 +59,6 @@ private:
 
     id_t last_read;
 
+    void init_request(int nb_books);
 };
 #endif //BOOKSTORE_CUSTOMER_H
