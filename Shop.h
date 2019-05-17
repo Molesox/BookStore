@@ -9,22 +9,28 @@
 #include <condition_variable>
 #include "Utilities/Library.h"
 #include "Customer.h"
-#include "Utilities/Semaphore.h"
+#include "Utilities/b_semaphore.h"
 
 
 using MutexType = std::mutex;
 using WriteLock = std::unique_lock<MutexType>;
 using CV = std::condition_variable;
+using semaphore = b_semaphore;
 
 class Customer;
+
 class Shop {
 public:
 
     Shop(Library *lib, size_t nb_places, size_t max_books);
 
+    ~Shop();
+
     int add_customer(Customer *c);
 
+    int remove_customer(Customer *c);
 
+    bool is_empty();
 
     std::vector<Customer *> m_customers;
 
@@ -36,13 +42,14 @@ public:
     MutexType lck_shop;
 
     CV cv_added;
-    CV cv_custom;
-    CV cv_seller;
-    CV cv_return_custom;
-    CV cv_return_seller;
+    CV cv_quit;
 
-    Semaphore seller;
-    Semaphore return_seller;
+    CV cv_custom;
+    CV cv_return_custom;
+
+    semaphore *seller;
+    semaphore *return_seller;
+
 
 
 };

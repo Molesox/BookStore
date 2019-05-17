@@ -10,6 +10,10 @@
 
 class Customer;
 
+typedef enum seller_states {
+    Sleep, Giving, returning
+} s_states;
+
 class Seller {
 
 public:
@@ -22,6 +26,7 @@ public:
 
 
     Shop *m_shop;
+    s_states m_state;
 private:
 };
 

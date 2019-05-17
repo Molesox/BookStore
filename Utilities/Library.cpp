@@ -194,7 +194,7 @@ void Library::unborrow(const Book &b) {
     string lg;
     for (auto &s : m_library) {
         lg = s.getMGenre();
-        if (lg.substr(0, lg.size() - 1) == b.m_genre) {
+        if (lg == b.m_genre) {
             s.unborrow(b.get_id());
         }
     }

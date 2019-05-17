@@ -15,10 +15,11 @@ using MutexType = std::mutex;
 using WriteLock = std::unique_lock<MutexType>;
 
 typedef enum states {
-    InQueue, Wait, Asking, Reading
+    InQueue, Wait, Asking, Reading, Leaving
 } c_states;
 
 class Shop;
+
 class Customer {
 
 public:
@@ -33,7 +34,9 @@ public:
 
     void read_book();
 
-    // int quitt_shop();
+    int quit_shop();
+
+    bool i_will_be_back();
 
     Shop *m_shop;
     Library *m_lib;
@@ -51,6 +54,10 @@ public:
     bool m_new_books;
     bool m_return_book;
 
+    int nb_books2ask;
+
+
+
     c_states m_state;
     static Id_t c_id;
     Id_t m_id;
@@ -59,6 +66,7 @@ private:
 
     id_t last_read;
 
-    void init_request(int nb_books);
+    //void init_request(int nb_books);
 };
+
 #endif //BOOKSTORE_CUSTOMER_H

@@ -3,4 +3,11 @@ project(BookStore)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(BookStore main.cpp Utilities/Book.cpp Utilities/Book.h Utilities/Library.cpp Utilities/Library.h Customer.cpp Customer.h Seller.cpp Seller.h Utilities/Shelf.cpp Utilities/Shelf.h Utilities/Semaphore.h Shop.cpp Shop.h)
+add_executable(BookStore main.cpp
+        Utilities/Book.cpp Utilities/Book.h
+        Utilities/Library.cpp Utilities/Library.h
+        Customer.cpp Customer.h
+        Seller.cpp Seller.h
+        Utilities/Shelf.cpp Utilities/Shelf.h
+        Utilities/basic_semaphore.cpp Utilities/basic_semaphore.cpp
+        Shop.cpp Shop.h Utilities/b_semaphore.cpp Utilities/b_semaphore.h)
