@@ -28,7 +28,7 @@ public:
 
     int visit_shop();
 
-    bool ask_book();
+    void ask_book();
 
     int return_book();
 
@@ -56,8 +56,6 @@ public:
 
     int nb_books2ask;
 
-
-
     c_states m_state;
     static Id_t c_id;
     Id_t m_id;
@@ -67,6 +65,7 @@ private:
     id_t last_read;
 
     //void init_request(int nb_books);
+    void update_requests();
 };
 
 #endif //BOOKSTORE_CUSTOMER_H

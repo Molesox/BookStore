@@ -51,8 +51,10 @@ const bool Shelf::book_exists(const Id_t id) const {
 
     if (m_shelf.find(id) == m_shelf.end()) {
         cerr << "The book with id " << id << " does not exist in this shelf." << endl;
+        lock1.unlock();
         return false;
     }
+    lock1.unlock();
     return true;
 }
 

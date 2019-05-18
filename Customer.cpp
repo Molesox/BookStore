@@ -27,6 +27,12 @@ Customer::Customer(Shop *shop, string interestGenre, int nb_books, int ids[]) {
     c_id++;
     m_id = c_id;
 
+    m_new_books = false;
+    m_return_book = false;
+
+    nb_books2ask = 0;
+
+
     for (int i = 0; i < 3; ++i) {
         m_Id_requests.push_back(ids[i]);
     }
@@ -45,11 +51,11 @@ int Customer::visit_shop() {
         m_shop->cv_added.wait(shop_lock, [&] { return m_state == InQueue; });//Wait shop confirmation.
 
         std::cout << "Customer[" << m_id << "] visits shop." << std::endl;
-
         shop_lock.unlock();
 
         return 0;
     }
+
     std::cout << "Customer[" << m_id << "] can't enter, no place... sorry." << std::endl;
     return -1;//Informs main that visit failed.
 }
@@ -60,44 +66,64 @@ int Customer::quit_shop() {
 
         WriteLock shop_lock(m_shop->lck_shop);
         m_shop->cv_quit.wait(shop_lock, [&] { return m_state == Leaving; });//Wait shop confirmation.
+
         std::cout << "Customer[" << m_id << "] quit shop." << std::endl;
         shop_lock.unlock();
 
         return 0;
     }
+    //This would be a huge error.
     return -1;
 }
 
 bool Customer::i_will_be_back() {
 
     WriteLock shop_lock(m_shop->lck_shop);
-    m_shop->cv_quit.wait(shop_lock);//Wait shop confirmation.
+    m_shop->cv_quit.wait(shop_lock);//Wait for some customer leaving the shop.
+
     std::cout << "Customer[" << m_id << "] try again to visit shop." << std::endl;
     shop_lock.unlock();
+
     return true;
 }
 
+void Customer::ask_book() {
 
-bool Customer::ask_book() {
-    WriteLock custom_lock(lck_custom);//lock the customer because of the state shared variable
-    bool reAsk = true;//In case he has to re-ask some books
 
-    for (int i = 0; i < m_Id_requests.size(); i++) {//for each request given at the
+    for (unsigned long &m_Id_request : m_Id_requests) {//For each request given at the
         //customer construction
 
-        if (m_lib->book_exists(m_genre_request, m_Id_requests[i])) {//If the books exists,
+        if (m_lib->book_exists(m_genre_request, m_Id_request)) {//If the books exists,
 
-            m_demands.push_back(m_Id_requests[i]);//then it's a demand.
-            m_Id_requests[i] = -1;
-            ++nb_books2ask;
-
+            m_demands.push_back(m_Id_request);//then it's a demand.
+            m_Id_request = -1;
+            ++nb_books2ask;//The nb of books to ask may be different of rhe nb of
+            //books requested at customer construction.
 
         } else {
-            // reAsk = true;
             cerr << "You are asking for inexistent book. Id : "
-                 << m_Id_requests[i] << endl;
+                 << m_Id_request << endl;
         }
     }
+    update_requests();
+
+    m_state = Asking;//change he's state.
+    WriteLock shop_lock(m_shop->lck_shop);//Waits for the seller.
+    m_shop->seller->up();//notify the seller that he has some books demands
+    m_shop->cv_custom.wait(shop_lock, [&] { return m_new_books; });//bool flag.
+
+    std::cout << "Customer[" << m_id << "] successfully get new books." << std::endl;
+    shop_lock.unlock();//can be done just after the wait. (just for terminal print)
+
+    nb_books2ask -= m_my_books.size();//decrements the books to ask
+
+    m_state = Reading;//change state for read_book()
+    m_new_books = false;//for the possible next call of ask_book.
+    // First initialisation is in customer constructor.
+}
+
+void Customer::update_requests() {
+    //TODO: This is not optimized, maybe there is a way to do it at the same time when we push the demands.
     vector<Id_t> temp;
     for (unsigned long m_Id_request : m_Id_requests) {
         if (m_Id_request != -1) {
@@ -105,36 +131,11 @@ bool Customer::ask_book() {
         }
     }
     m_Id_requests = temp;
-
-
-    m_state = Asking;//change he's state.
-    custom_lock.unlock();//Manual unlocking is done before notifying, to avoid waking up
-
-    WriteLock shop_lock(m_shop->lck_shop);//Waits for the seller.
-    m_shop->seller->up();//notify the seller that
-    //he has some books demands
-    m_shop->cv_custom.wait(shop_lock, [&] { return m_new_books; });//bool flag.
-
-    std::cout << "Customer[" << m_id << "] successfully get new books." << std::endl;
-    shop_lock.unlock();//can be done just after the wait. (just for terminal print)
-
-    custom_lock.lock();
-    nb_books2ask -= m_my_books.size();
-
-    if (nb_books2ask == 0) {
-        reAsk = false;
-    }
-    m_state = Reading;
-    m_new_books = false;
-    custom_lock.unlock();
-    return reAsk;//Informs the main that he has to re-ask or not books.
 }
 
 void Customer::read_book() {
 
     if (m_state == Reading) {
-
-
 
         //Move all the books in demands tab to the read one.
         m_read.insert(m_read.end(), std::make_move_iterator(m_my_books.begin()),
@@ -143,13 +144,16 @@ void Customer::read_book() {
 
         usleep(1000000);//He reads really quickly
 
-        m_return_book = true;//He have books to return.Bool flag for Seller
+        m_return_book = true;//He have books to return.Bool flag for seller thread.
 
-        WriteLock shop_lock(m_shop->lck_shop);
+
+        //TODO:: kick this out at the end of project.
+        WriteLock shop_lock(m_shop->lck_shop);//Just for homogeneous print int terminal.
         std::cout << "Customer[" << m_id << "] has read." << std::endl;
         shop_lock.unlock();
 
     } else {
+        //To read we must be in read state otherwise it doesn't make sens.
         cerr << "Fatal error." << endl;
         exit(88);
     }
@@ -159,16 +163,16 @@ void Customer::read_book() {
 int Customer::return_book() {
 
     if (m_return_book) {//If he has books to return,
-        WriteLock shop_lock(m_shop->lck_shop);//And wait that the seller
+
         m_shop->return_seller->up();//Notify the seller
 
-
+        WriteLock shop_lock(m_shop->lck_shop);//And wait that the seller
         m_shop->cv_return_custom.wait(shop_lock, [&] { return !m_return_book; });//takes back the
-        //books. The seller informs using the bool m_return_book flag that the
+        //books. The seller informs using the bool m_return_book flag that THIS
         //customer has returned all the books.
-
         std::cout << "Customer[" << m_id << "] successfully returned books." << std::endl;
         shop_lock.unlock();
+
         if (nb_books2ask <= 0) {//Informs the main if,
             std::cout << "Customer[" << m_id << "] successfully  returned ALL! books." << std::endl;
             return 0;//yes : he has finish to ask, read and return books.

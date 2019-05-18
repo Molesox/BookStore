@@ -9,5 +9,4 @@ add_executable(BookStore main.cpp
         Customer.cpp Customer.h
         Seller.cpp Seller.h
         Utilities/Shelf.cpp Utilities/Shelf.h
-        Utilities/basic_semaphore.cpp Utilities/basic_semaphore.cpp
         Shop.cpp Shop.h Utilities/b_semaphore.cpp Utilities/b_semaphore.h)

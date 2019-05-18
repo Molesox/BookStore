@@ -54,23 +54,27 @@ int Shop::add_customer(Customer *c) {
 int Shop::remove_customer(Customer *c) {
 
 
-    if (is_empty()) return -1;//Check if there
-    //the shop is already empty.
-
+    if (is_empty()) {//Check if the shop is already empty.
+        cerr << "Fatal error. Customer[" << c->m_id
+             << "] can't quit the shop because is empty" << endl;
+        return -1;
+    }
 
     WriteLock s_lck(lck_shop);//Locks the shop.
-    auto position = std::find(m_customers.begin(), m_customers.end(), c);
 
-    if (position != m_customers.end()) {
-        (*position)->m_state = Leaving;
-        m_customers.erase(position);
-    } else {
-        cerr << "Customer[" << c->m_id << "] can't quit the shop because is not inside" << endl;
+    //Find the customer in the shop.
+    auto position = std::find(m_customers.begin(), m_customers.end(), c);
+    if (position != m_customers.end()) {//Iterator stuff.
+        (*position)->m_state = Leaving;//Bool flag for customer notification
+        m_customers.erase(position);//Frees space
+    } else {//If is not inside
+        cerr << "Customer[" << c->m_id
+             << "] can't quit the shop because is not inside" << endl;
         return -1;
     }
 
 
-    s_lck.unlock();//frees the shop
+    s_lck.unlock();//frees the shop before notification to avoid waking up.
     cv_quit.notify_all();//and notify all the waiting customers.
 
     return 0;

@@ -209,7 +209,7 @@ Shelf Library::get_shelf_by_genre(const std::string genre) {
         }
     }
     cerr << "get_shelf_by_genre could not find the genre : "
-        << genre << endl;
+         << genre << endl;
 }
 
 
