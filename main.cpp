@@ -76,6 +76,7 @@ int main() {
     for (auto &c_thread : c_threads) {
         c_thread.join();
     }
+
     t_JOHN.join();
 
     for (auto c : customers) {
