@@ -1,6 +1,17 @@
 # Multithreaded BookStore
 
 Welcome to the bookstore project that we created for the Operating Systems course at UniFR.
+The general structure we chose tries to reflect the real world pretty closely :
+There is a class for John, the librarian, another for the customer(s), and a main file to run the program.
+Outside of those main files, there are utilities that help represent the books, the shelves and the library itself, as
+well as another to contain the semaphore structure.
+
+In our case, the library is a vector of shelves. Each shelf (representing a genre) is a hashmap (unordered_map).
+This structure helps to keep book searches and changes fast and relatively efficient, which is not really necessary,
+but is always a good thing to have. It also helps to keep code changes simple and clean.
+
+An important choice we made after designing the backbone for the project is to automatically read in a huge amount
+of books at startup from a database found online. There are, at the time of writing, 16559 books in this database.
 
 ## Getting Started
 
