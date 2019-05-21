@@ -1,4 +1,4 @@
-#include "MaFenetre.h"
+#include "mafenetre.h"
 
 MaFenetre::MaFenetre() : QWidget()
 {
@@ -47,12 +47,12 @@ MaFenetre::MaFenetre() : QWidget()
     cBC->addItem("J'en ai marre");
     cBC->addItem("Toujours...");
     //
-    // REMPLACER LES EXEMPLES PAR UNE BOUCLE QUI AJOUTE TOUS LES ITEMS CORRESPONDANT DANS LES DONNEES
+    // REMPLACER LES EXEMPLES PAR UNE BOUCLE QUI AJOUTE TOUS LES ITEMS CORRESPONDANT DANS LES DONNEES OU DIRECTEMENT LA LISTE
 
     lcd_lm = new QLCDNumber(this);
     lcd_lp = new QLCDNumber(this);
     lcd_c = new QLCDNumber(this);
-    // LES TROIS AU-DESSUS DOIVENT ETRE MIS A JOUR REGULIEREMENT PAR RAPPORT AU PRORGAMME
+    // LES TROIS AU-DESSUS DOIVENT ETRE MIS A JOUR REGULIEREMENT PAR RAPPORT AU PRORGAMME / AVEC UN BOUTON ACTUALISER ?
     lcd_lr = new QLCDNumber(this);
 
     slider_h = new QSlider(Qt::Horizontal, this);
