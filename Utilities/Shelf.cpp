@@ -164,15 +164,9 @@ void Shelf::unborrow(Id_t id) {
     WriteLock lck(m_mutex);
 
     if (m_shelf.find(id) == m_shelf.end()) {
-        cout << "The book with id: " << id << " can't be unborrow" << endl;
+        cout << "The book with id: " << id << " can't be unborrowed" << endl;
     } else {
         m_shelf[id]->unborrow();
     }
-}
-
-const id_t Shelf::get_next_book_id(int after) {
-    auto it = m_shelf.begin(after);
-    it++;
-    return it->first;
 }
 

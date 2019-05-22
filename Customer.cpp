@@ -6,7 +6,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <algorithm>
-#include "Utilities/basic_semaphore.h"
+#include "Utilities/b_semaphore.h"
 #include "Customer.h"
 
 using namespace std;
@@ -15,7 +15,7 @@ Id_t Customer::c_id = 0;
 
 Customer::Customer(Shop *shop, string interestGenre, int nb_books, int ids[]) {
 
-    last_read = -1;
+    next_id = -1;
     m_lib = shop->m_lib;
     m_shop = shop;
     m_genre_request = std::move(interestGenre);
@@ -183,11 +183,20 @@ int Customer::return_book() {
 
 
 
-/*
- * TODO: EN maintenance, veuillez passer un autre jour.
+
 void Customer::init_request(int nb_books){ //add nb_books random book ids to the request vector of this customer
-    WriteLock shop_lock(m_shop->lck_shop);  //TOO : change for a readlock
     Shelf s = m_shop->m_lib->get_shelf_by_genre(m_genre_request);
+
+    //Set the next id var if we have not yet tried to read book ids
+    auto it = s.getMShelf().begin();
+    if(next_id == -1){
+        next_id = it->first
+    }
+
+    //Iterate towards the next ids
+    while(it->first != next_id){
+        it++;
+    }
 
     //Add nb_books, if there are less books in the shelf, add all of them anyway
     int n = nb_books;
@@ -196,9 +205,8 @@ void Customer::init_request(int nb_books){ //add nb_books random book ids to the
 
     //retrieve book ids and add them to the list of requests
     for(int i = 0; i < n; i++){
-        id_t temp = s.get_next_book_id(last_read);
-        last_read = temp;
-        m_Id_requests.push_back(temp);
+        m_Id_requests.push_back(next_id);
+        it++;
+        next_id = it->first;
     }
 }
-*/
