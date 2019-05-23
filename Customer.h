@@ -91,9 +91,10 @@ private:
 
 
 
-    id_t last_read;
+    id_t next_id;
 
-    //void init_request(int nb_books);
+    void init_request(int nb_books);
+
     void update_requests();
 };
 

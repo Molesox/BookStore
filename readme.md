@@ -2,94 +2,63 @@
 
 Welcome to the bookstore project that we created for the Operating Systems course at UniFR.
 The general structure we chose tries to reflect the real world pretty closely :
-There is a class for John, the librarian, another for the customer(s), and a main file to run the program.
-Outside of those main files, there are utilities that help represent the books, the shelves and the library itself, as
-well as another to contain the semaphore structure.
+There is a class for John, the librarian, another for the customer(s), and a main file to run
+the program. Outside of those main files, there are utilities that help represent the books,
+the shelves and the library itself, as well as another to contain the semaphore structure.
 
-In our case, the library is a vector of shelves. Each shelf (representing a genre) is a hashmap (unordered_map).
-This structure helps to keep book searches and changes fast and relatively efficient, which is not really necessary,
-but is always a good thing to have. It also helps to keep code changes simple and clean.
+In our case, the library is a vector of shelves. Each shelf (representing a genre) is a 
+hashmap (unordered_map). This structure helps to keep book searches and changes fast and
+relatively efficient, which is not really necessary, but is always a good thing to have. 
+It also helps to keep code changes simple and clean.
 
-An important choice we made after designing the backbone for the project is to automatically read in a huge amount
-of books at startup from a database found online. There are, at the time of writing, 16559 books in this database.
+An important choice we made after designing the backbone for the project is to automatically
+read in a huge amount of books at startup from a database found online. There are, at the 
+time of writing, 16559 books in this database.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+To get started using our program, just run the main executable. This will start the GUI, 
+which contains buttons to start the individual scenarios.
 
-### Prerequisites
+### Running the individual scenarios
 
-What things you need to install the software and how to install them
+Our GUI handles the starting of the scenarios. Simply start it and press the button
+that corresponds to the scenario that you want to run.
 
-```
-Give examples
-```
+### Data on the GUI
 
-### Installing
+On the interface, there are buttons allowing you to start or stop the scenarios.
+There are also some data points, for example how many customers are currently in the shop,
+how many books there are in total and what the state of a specific customer is.
 
-A step by step series of examples that tell you how to get a development env running
+### Inner workings of the project
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
+To mimic a real life situation, we chose to make John, the librarian, an independent
+identity that has to access the library to be able to give out or take bake the books.
+As such, There is a thread for John with a pointer to the library, and the customer
+threads must go through John to get books or give them back. <br>The customers come into
+the shop with a genre of interest, and an amount of books that they want to borrow.
+John will happily give them the books, but has a set value of how many books he can give
+out for a specific genre at a time. <br>This means that if the customer wants 3 books but 
+John can only give him 2 at a time, the customer will take the first two, read them, give
+them back, and then get the third one.
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [CLion](https://www.jetbrains.com/clion/) - The IDE used for the base code
+* [Qt](https://www.qt.io/download) - Used to make the GUI
 
-## Contributing
+## Git
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We used [GitHub](https://github.com/Molesox/BookStore) to keep the project and handle 
+merging. The project is also on the [DIUF GitLab](https://diuf-gitlab.unifr.ch/), 
+but on is updated more often on GitHub.
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+* **Daniel Sanz**
+* **Maxence Feller**
+* **Bastian Stadelmann**
 
 ## Acknowledgments
 
