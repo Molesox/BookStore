@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     migros->close();
     t_JOHN.join();
 
-
+//ssss
 
     for (auto c : customers) {
         delete c;
