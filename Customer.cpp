@@ -6,7 +6,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <algorithm>
-#include "Utilities/basic_semaphore.h"
+#include <thread>
 #include "Customer.h"
 
 using namespace std;
@@ -108,8 +108,9 @@ void Customer::ask_book() {
     update_requests();
 
     m_state = Asking;//change he's state.
+    m_shop->notify_seller();//notify the seller that he has some books demands
     WriteLock shop_lock(m_shop->lck_shop);//Waits for the seller.
-    m_shop->seller->up();//notify the seller that he has some books demands
+
     m_shop->cv_custom.wait(shop_lock, [&] { return m_new_books; });//bool flag.
 
     std::cout << "Customer[" << m_id << "] successfully get new books." << std::endl;
@@ -142,7 +143,7 @@ void Customer::read_book() {
                       std::make_move_iterator(m_my_books.end()));
         m_my_books.erase(m_my_books.begin(), m_my_books.end());
 
-        usleep(1000000);//He reads really quickly
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         m_return_book = true;//He have books to return.Bool flag for seller thread.
 
@@ -164,7 +165,7 @@ int Customer::return_book() {
 
     if (m_return_book) {//If he has books to return,
 
-        m_shop->return_seller->up();//Notify the seller
+        m_shop->notify_return_seller();//Notify the seller
 
         WriteLock shop_lock(m_shop->lck_shop);//And wait that the seller
         m_shop->cv_return_custom.wait(shop_lock, [&] { return !m_return_book; });//takes back the
@@ -180,6 +181,29 @@ int Customer::return_book() {
     }
     return -1;//or not.
 }
+
+bool Customer::is_asking() {
+    return m_state==Asking;
+}
+
+void Customer::in_queue() {
+    m_state = InQueue;
+}
+
+void Customer::leave() {
+    m_state = Leaving;
+
+}
+
+Id_t Customer::get_id() const {
+    return m_id;
+}
+
+const string &Customer::get_interested_genre() const {
+    return m_genre_request;
+}
+
+
 
 
 

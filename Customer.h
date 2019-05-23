@@ -22,6 +22,8 @@ class Shop;
 
 class Customer {
 
+
+
 public:
 
     Customer(Shop *shop, std::string interestGenre, int nb_books, int ids[]);
@@ -38,14 +40,22 @@ public:
 
     bool i_will_be_back();
 
-    Shop *m_shop;
-    Library *m_lib;
+    bool is_asking();
+
+    void in_queue();
+
+    void leave();
+
+    Id_t get_id() const;
+
+    const std::string &get_interested_genre() const;
+
 
     MutexType lck_custom;
 
-    std::string m_genre_request;
 
-    std::vector<Id_t> m_Id_requests;
+
+
     std::vector<Id_t> m_demands;
 
     std::vector<Book> m_my_books;
@@ -54,13 +64,32 @@ public:
     bool m_new_books;
     bool m_return_book;
 
-    int nb_books2ask;
 
-    c_states m_state;
+
+
+
+
+private:
+
     static Id_t c_id;
     Id_t m_id;
 
-private:
+    Shop *m_shop;
+    Library *m_lib;
+
+    c_states m_state;
+
+    std::string m_genre_request;
+
+    int nb_books2ask;
+
+
+    std::vector<Id_t> m_Id_requests;
+
+
+
+
+
 
     id_t last_read;
 

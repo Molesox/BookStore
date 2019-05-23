@@ -8,6 +8,7 @@
 
 #include <random>
 #include <chrono>
+#include <atomic>
 
 
 using namespace std;
@@ -23,6 +24,8 @@ void custom_thread(Customer *c) {
 
         c->quit_shop();
 
+        return;
+
     } else {
         c->i_will_be_back();
         goto hello;
@@ -30,22 +33,22 @@ void custom_thread(Customer *c) {
 
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
 
 void john_thread(Seller *s) {
 
     while (true) {
-        s->give_book();
+        if (s->give_book() == -2) {
+            break;
+        }
         s->get_back_book();
     }
 }
 
-#pragma clang diagnostic pop
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    Library *l = new Library(R"(..\book_dataset.csv)");
+
+    Library *l = new Library(argv[1]);
     cout << *l << endl << endl;
 
     Shop *migros = new Shop(l, 2, 2);
@@ -62,7 +65,7 @@ int main() {
 
 
     std::mt19937_64 eng{std::random_device{}()};  // or seed however you want
-    std::uniform_int_distribution<> dist{10, 100};
+    std::uniform_int_distribution<> dist{1000, 10000};
 
 
     thread c_threads[3];
@@ -77,7 +80,11 @@ int main() {
         c_thread.join();
     }
 
+    john.quit();
+    migros->close();
     t_JOHN.join();
+
+
 
     for (auto c : customers) {
         delete c;
@@ -85,6 +92,12 @@ int main() {
 
     delete l;
     delete migros;
+
+    char in = 'n';
+    while (in != 'y') {
+        std::cout << "wanna quit [y,n] ";
+        cin >> in;
+    }
 
     return 0;
 }
