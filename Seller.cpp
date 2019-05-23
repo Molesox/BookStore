@@ -3,6 +3,7 @@
 //
 
 #include "Seller.h"
+#include "Utilities/Logger.h"
 #include <chrono>
 
 using namespace std;
@@ -16,6 +17,7 @@ int Seller::give_book() {
 
         WriteLock shop_lock(m_shop->lck_shop);//Seller wait for some customers
         cout << "John sleeps" << endl;
+        logger->log("John sleeps");
         m_shop->cv_added.wait(shop_lock);//If he's notified,
 
         if(m_state==Quit){
@@ -24,6 +26,7 @@ int Seller::give_book() {
 
         m_state = Giving;//changes his state.
         cout << "John wakes up" << endl;
+        logger->log("John wakes up");
         shop_lock.unlock();//Should be useless but just in case.
     }
 

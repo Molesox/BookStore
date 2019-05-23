@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include "Utilities/Book.h"
+#include "Utilities/Logger.h"
 #include "Shop.h"
 
 using MutexType = std::mutex;
@@ -86,10 +87,7 @@ private:
 
     std::vector<Id_t> m_Id_requests;
 
-
-
-
-
+    static FileLogger* logger;
 
     id_t next_id;
 

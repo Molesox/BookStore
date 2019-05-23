@@ -5,6 +5,7 @@
 #include "Utilities/Library.h"
 #include "Shop.h"
 #include "Seller.h"
+#include "Utilities/Logger.h"
 
 #include <random>
 #include <chrono>
@@ -43,7 +44,6 @@ void john_thread(Seller *s) {
         s->get_back_book();
     }
 }
-
 
 int main(int argc, char *argv[]) {
 

@@ -7,6 +7,7 @@
 
 
 #include "Customer.h"
+#include "Utilities/Logger.h"
 
 class Customer;
 
@@ -26,11 +27,10 @@ public:
 
     void quit();
 
-
-
 private:
     Shop *m_shop;
     s_states m_state;
+    FileLogger *logger = new FileLogger("John", "John.log");
 };
 
 
