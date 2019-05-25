@@ -2,6 +2,7 @@
 // Created by Daniel on 04.05.2019.
 //
 #include <iostream>
+#include <vector>
 #include "Shelf.h"
 
 using namespace std;
@@ -12,11 +13,16 @@ using namespace std;
  * with the same Id it will be removed.
  * @param pointer to the book to add.
  */
+
 void Shelf::add_book(Book *book) {
 
     WriteLock lock1(m_mutex);
+
     m_shelf[book->get_id()] = book;
+
 }
+
+Book false_book("", "", "", "", -1);
 
 /**
  * Returns a pointer to the book we want. If the book is not available
@@ -31,7 +37,7 @@ Book *Shelf::borrow(Id_t id) {
 
     if (m_shelf.find(id) == m_shelf.end()) {
         cout << "The book with id: " << id << " not found." << endl;
-        return nullptr;
+        return &false_book;
     }
 
     Book *b = m_shelf[id];
@@ -39,7 +45,7 @@ Book *Shelf::borrow(Id_t id) {
     if (b->is_borrowed()) {
 
         cout << "book: " << id << "is borrowed" << endl;
-        return nullptr;
+        return &false_book;
     }
     b->borrow();
 
@@ -58,12 +64,25 @@ const bool Shelf::book_exists(const Id_t id) const {
     return true;
 }
 
+const bool Shelf::is_borrowed(const Id_t id) const {
+    ReadLock lock1(m_mutex);
+    auto b = m_shelf.find(id);
+    if (m_shelf.find(id) == m_shelf.end()) {
+        cerr << "The book with id " << id << " does not exist in this shelf." << endl;
+        lock1.unlock();
+        return false;
+    }
+
+    return b->second->is_borrowed();
+}
+
 Shelf::Shelf(Shelf &&shelf) noexcept {
 
     WriteLock rhs_lk(shelf.m_mutex);
 
     m_genre = std::move(shelf.m_genre);
     m_shelf = std::move(shelf.m_shelf);
+    m_list_ids = shelf.m_list_ids;
 
 }
 
@@ -90,6 +109,7 @@ Shelf &Shelf::operator=(Shelf &&a) noexcept {
 
         m_genre = std::move(a.m_genre);
         m_shelf = std::move(a.m_shelf);
+        m_list_ids = a.m_list_ids;
     }
     return *this;
 
@@ -103,6 +123,8 @@ Shelf &Shelf::operator=(const Shelf &a) {
 
         m_genre = a.m_genre;
         m_shelf = a.m_shelf;
+        m_list_ids = a.m_list_ids;
+
     }
     return *this;
 }
@@ -112,6 +134,7 @@ Shelf::Shelf(const Shelf &a) {
     ReadLock rhs_lk(a.m_mutex);
     m_genre = a.m_genre;
     m_shelf = a.m_shelf;
+    m_list_ids = a.m_list_ids;
 }
 
 /**
@@ -170,9 +193,13 @@ void Shelf::unborrow(Id_t id) {
     }
 }
 
-const Id_t Shelf::get_next_book_id(int after) {
-    auto it = m_shelf.begin(after);
-    it++;
-    return it->first;
+
+vector<Id_t> Shelf::getMListIds() const {
+
+    return m_list_ids;
 }
 
+void Shelf::add_id(Id_t t) {
+
+    m_list_ids.push_back(t);
+}

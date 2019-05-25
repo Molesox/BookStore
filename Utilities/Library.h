@@ -57,8 +57,11 @@ public:
 
     size_t getBiggestShelf() const;
 
-    Shelf get_shelf_by_genre(std::string genre);
+    Shelf get_shelf_by_genre(std::string genre) const;
 
+    std::vector<Id_t> getIds(std::string genre);
+
+    const bool is_borrowed(const std::string &genre, const Id_t id) const;
 
 
     //ATTRIBUTES

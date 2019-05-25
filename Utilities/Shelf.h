@@ -7,6 +7,8 @@
 
 #include <mutex>
 #include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 #include "Book.h"
 
@@ -18,10 +20,12 @@ class Shelf {
     using ReadLock = std::unique_lock<MutexType>;
     using WriteLock = std::unique_lock<MutexType>;
 
-private:
 
     //ATTRIBUTES
 
+
+private:
+    std::vector<Id_t> m_list_ids;
     mutable MutexType m_mutex;
     std::string m_genre;
     hash_map_books_t m_shelf;
@@ -55,6 +59,10 @@ public:
 
     const bool book_exists(Id_t id) const;
 
+    void add_id(Id_t t);
+
+    std::vector<Id_t> getMListIds() const;
+
     //GETTERS & SETTERS
 
     const std::string getMGenre() const;
@@ -63,8 +71,8 @@ public:
 
     const hash_map_books_t &getMShelf() const;
 
-    const Id_t get_next_book_id(int after);
 
+    const bool is_borrowed(const Id_t id) const;
 };
 
 

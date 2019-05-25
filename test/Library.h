@@ -84,4 +84,3 @@ std::ostream &operator<<(std::ostream &os, const Library &library);
 #endif //BOOKSTORE_LIBRARY_H
 
 #pragma clang diagnostic pop
-

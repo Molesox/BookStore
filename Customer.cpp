@@ -1,3 +1,5 @@
+#include <random>
+
 #include <utility>
 
 //
@@ -13,11 +15,11 @@
 using namespace std;
 
 Id_t Customer::c_id = 0;
-FileLogger* Customer::logger = new FileLogger("Customers", "Customers.log");
+FileLogger *Customer::logger = new FileLogger("Customers", "Customers.log");
 
-Customer::Customer(Shop *shop, string interestGenre, int nb_books, int ids[]) {
+Customer::Customer(Shop *shop, string interestGenre, int nb_books) {
 
-    next_id = -1;
+
     m_lib = shop->m_lib;
     m_shop = shop;
     m_genre_request = std::move(interestGenre);
@@ -35,11 +37,7 @@ Customer::Customer(Shop *shop, string interestGenre, int nb_books, int ids[]) {
     nb_books2ask = 0;
 
 
-    for (int i = 0; i < 3; ++i) {
-        m_Id_requests.push_back(ids[i]);
-    }
-
-    //init_requests(nb_books)
+    init_request(nb_books);
 
 }
 
@@ -110,7 +108,7 @@ void Customer::ask_book() {
             cerr << "You are asking for inexistent book. Id : "
                  << m_Id_request << endl;
             logger->log(FileLogger::e_logType::LOG_WARNING + "Customer[" + to_string(m_id)
-                + "] asking for inexistent book. Id : " + to_string(m_Id_request));
+                        + "] asking for inexistent book. Id : " + to_string(m_Id_request));
         }
     }
     update_requests();
@@ -161,7 +159,7 @@ void Customer::read_book() {
         WriteLock shop_lock(m_shop->lck_shop);//Just for homogeneous print int terminal.
         std::cout << "Customer[" << m_id << "] has read." << std::endl;
         logger->log("Customer[" + to_string(m_id) + "] has read."),
-        shop_lock.unlock();
+                shop_lock.unlock();
 
     } else {
         //To read we must be in read state otherwise it doesn't make sens.
@@ -196,7 +194,7 @@ int Customer::return_book() {
 }
 
 bool Customer::is_asking() {
-    return m_state==Asking;
+    return m_state == Asking;
 }
 
 void Customer::in_queue() {
@@ -217,33 +215,23 @@ const string &Customer::get_interested_genre() const {
 }
 
 
+void Customer::init_request(int nb_books) {     //add nb_books random book ids to the request vector of this customer
 
 
+    auto list_ids = m_lib->getIds(m_genre_request);
 
 
-void Customer::init_request(int nb_books){     //add nb_books random book ids to the request vector of this customer
-    Shelf s = m_shop->m_lib->get_shelf_by_genre(m_genre_request);
+    if (nb_books == -1) {
 
-    //Set the next id var if we have not yet tried to read book ids
-    auto it = s.getMShelf().begin();
-    if(next_id == -1){
-        next_id = it->first;
-    }
+        m_Id_requests = list_ids;
 
-    //Iterate towards the next ids
-    while(it->first != next_id){
-        it++;
-    }
+    } else {
 
-    //Add nb_books, if there are less books in the shelf, add all of them anyway
-    int n = nb_books;
-    if(s.nb_books() < nb_books)
-        n = s.nb_books();
+        std::random_shuffle(list_ids.begin(), list_ids.end());
+        for (int i = 0; i < nb_books; ++i) {
+            std::cout << " id  " << list_ids[i] << std::endl;
+            m_Id_requests.push_back(list_ids[i]);
+        }
 
-    //retrieve book ids and add them to the list of requests
-    for(int i = 0; i < n; i++){
-        m_Id_requests.push_back(next_id);
-        it++;
-        next_id = it->first;
     }
 }

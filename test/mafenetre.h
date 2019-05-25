@@ -14,11 +14,6 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QLineEdit>
-#include <Book.h>
-#include "shop.h"
-#include "seller.h"
-#include <thread>
-#include <vector>
 
 class MaFenetre : public QWidget
 {
@@ -27,13 +22,12 @@ class MaFenetre : public QWidget
     public:
     MaFenetre();
 
-    Library *lib;
-    Shop *migros;
-    Seller *john;
-    std::thread* t_JOHN;
-    std::vector<Customer*> v_custom;
-
     public slots:
+            void
+
+    changerLargeur(int largeur);
+
+    //void changerHauteur(int hauteur);
     void ouvrirDialogue();
     void runSOne();
     void runSTwo();

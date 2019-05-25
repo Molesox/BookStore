@@ -50,10 +50,14 @@ int Seller::give_book() {
 
                 for (int i = 0; i < m_shop->max_books(); ++i) {//we give him the max possible nb of books,
                     if (m_shop->m_lib->book_exists(c->get_interested_genre(), c->m_demands[i])) {//only if they exist.
-                        c->m_my_books.push_back(m_shop->m_lib->borrow(c->m_demands[i], c->get_interested_genre()));
-                        c->m_new_books = true;//bool flag to notify the customer thread that he
-                        // has new books.
-                        logger->log("Gave a book to Customer[" + to_string(c->get_id()) + "].");
+                        if (not m_shop->m_lib->is_borrowed(c->get_interested_genre(),
+                                                           c->m_demands[i])) {//and if they are not borrowed
+                            c->m_my_books.push_back(m_shop->m_lib->borrow(c->m_demands[i], c->get_interested_genre()));
+                            c->m_new_books = true;//bool flag to notify the customer thread that he
+                            // has new books.
+                            logger->log("Gave a book to Customer[" + to_string(c->get_id()) + "].");
+                        }
+
                     }
                 }
                 if (c->m_new_books) {//For each given book we down the count of the semaphore.

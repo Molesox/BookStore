@@ -6,7 +6,6 @@
 #define BOOKSTORE_LOGGER_H
 
 #include <fstream>
-#include <sys/time.h>
 
 using namespace std;
 
@@ -63,19 +62,7 @@ public:
     }
 
     void log(string logstr){
-        myFile << timeStamp() << logstr << endl;
-    }
-
-    string timeStamp(){
-        time_t now;
-        struct tm *current;
-        now = time(0);
-        current = localtime(&now);
-
-        struct timeval detail_time;
-        gettimeofday(&detail_time,NULL);
-        return to_string(current->tm_hour) + ":" + to_string(current->tm_min) + ":" +
-            to_string(current->tm_sec) + "." + to_string(detail_time.tv_usec) + " ";
+        myFile << logstr << endl;
     }
 
     //FileLogger FileLogger(const FileLogger &) = delete;

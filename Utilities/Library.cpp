@@ -33,6 +33,7 @@ Library::Library(string const &filename) {
                 if (i.getMGenre() == temp->m_genre) {
 
                     i.add_book(temp);
+                    i.add_id(temp->get_id());
                     added = true;
                     break;
                 }
@@ -40,7 +41,10 @@ Library::Library(string const &filename) {
             if (!added) {
                 m_library.push_back(Shelf());
                 m_library.back().setMGenre(temp->m_genre);
+                m_library.back().add_id(temp->get_id());
+
                 m_library.back().add_book(temp);
+
             }
 
             added = false;
@@ -50,6 +54,7 @@ Library::Library(string const &filename) {
         m_dataset.close();
         init_max_shelf();
         m_nb_shelfs = m_library.size();
+
 
     } else {
         cout << "Unable to open file : " << m_filename << "\n";
@@ -97,7 +102,8 @@ void Library::print(std::ostream &flux) const {
          << m_nb_books << " books \n"
          << m_nb_shelfs << " distinct genres\n"
          << m_max_shelf << " occurences of genre : "
-         << m_max_genre << endl;
+         << m_max_genre << "\n";
+
 }
 
 
@@ -135,6 +141,17 @@ const bool Library::book_exists(const std::string &genre, const Id_t id) const {
     return false;
 }
 
+const bool Library::is_borrowed(const std::string &genre, const Id_t id) const {
+    string lg;
+    for (const auto &s : m_library) {
+        lg = s.getMGenre();
+        if (lg.substr(0, lg.size() - 1) == genre) {
+            return s.is_borrowed(id);
+        }
+    }
+    cerr << "Genre " << genre << " not found." << endl;
+    return false;
+}
 //GETTERS & SETTERS
 
 size_t Library::getNbShelfs() const {
@@ -182,7 +199,9 @@ Book Library::borrow(Id_t id, const std::string &genre) {
         lg = s.getMGenre();
         if (lg.substr(0, lg.size() - 1) == genre) {
             //TODO: Check if b is not null.
+
             Book b = *s.borrow(id);
+
             return b;
         }
     }
@@ -200,9 +219,9 @@ void Library::unborrow(const Book &b) {
     }
 }
 
-Shelf Library::get_shelf_by_genre(const std::string genre) {
+Shelf Library::get_shelf_by_genre(const std::string genre) const {
     string lg;
-    for (const auto &s : m_library) {
+    for (auto &s : m_library) {
         lg = s.getMGenre();
         if (lg.substr(0, lg.size() - 1) == genre) {
             return s;
@@ -210,6 +229,19 @@ Shelf Library::get_shelf_by_genre(const std::string genre) {
     }
     cerr << "get_shelf_by_genre could not find the genre : "
          << genre << endl;
+}
+
+std::vector<Id_t> Library::getIds(std::string genre) {
+    string lg;
+    for (auto &s : m_library) {
+        lg = s.getMGenre();
+        if (lg.substr(0, lg.size() - 1) == genre) {
+            cout << "ici" << endl;
+            return s.getMListIds();
+        }
+    }
+    cerr << "get ids genre not found" << endl;
+
 }
 
 

@@ -24,10 +24,9 @@ class Shop;
 class Customer {
 
 
-
 public:
 
-    Customer(Shop *shop, std::string interestGenre, int nb_books, int ids[]);
+    Customer(Shop *shop, std::string interestGenre, int nb_books);
 
     int visit_shop();
 
@@ -55,8 +54,6 @@ public:
     MutexType lck_custom;
 
 
-
-
     std::vector<Id_t> m_demands;
 
     std::vector<Book> m_my_books;
@@ -64,10 +61,6 @@ public:
 
     bool m_new_books;
     bool m_return_book;
-
-
-
-
 
 
 private:
@@ -84,12 +77,12 @@ private:
 
     int nb_books2ask;
 
+    int counter = 0;
 
     std::vector<Id_t> m_Id_requests;
 
-    static FileLogger* logger;
+    static FileLogger *logger;
 
-    id_t next_id;
 
     void init_request(int nb_books);
 
