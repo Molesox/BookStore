@@ -7,7 +7,7 @@
 
 
 #include "Customer.h"
-#include "Utilities/Logger.h"
+#include "Logger.h"
 
 class Customer;
 

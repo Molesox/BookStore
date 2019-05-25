@@ -8,8 +8,8 @@
 #include <mutex>
 #include <vector>
 #include <string>
-#include "Utilities/Book.h"
-#include "Utilities/Logger.h"
+#include "Book.h"
+#include "Logger.h"
 #include "Shop.h"
 
 using MutexType = std::mutex;

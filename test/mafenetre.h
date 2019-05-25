@@ -26,13 +26,13 @@ class MaFenetre : public QWidget
     void changerLargeur(int largeur);
     //void changerHauteur(int hauteur);
     void ouvrirDialogue();
-    void ouvrirDialogueDel();
     void runSOne();
     void runSTwo();
     void runSThree();
     void start();
     void stop();
     //void actualiseLCD();
+    void stateChanged();
 
     signals:
     void agrandissementMax();
@@ -44,8 +44,10 @@ class MaFenetre : public QWidget
     QVBoxLayout *layoutV1;
     QVBoxLayout *layoutV2;
     QVBoxLayout *layoutV3;
+    QVBoxLayout *layoutV4;
     QGridLayout *layoutG0;
     QGridLayout *layoutG1;
+    QGridLayout *layoutG2;
     QLabel *labelLM;
     QLabel *labelLP;
     QLabel *labelC;
@@ -56,6 +58,8 @@ class MaFenetre : public QWidget
     QLabel *labelHorizontal;
     QLabel *labelVertical;
     QLabel *labelQuitter;
+    QLabel *labelCustomerState1;
+    QLabel *labelCustomerState2;
     QComboBox *cBG;
     QComboBox *cBL;
     QComboBox *cBC;

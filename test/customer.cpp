@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <thread>
 #include "Customer.h"
-#include "Utilities/Logger.h"
+#include "Logger.h"
 
 using namespace std;
 

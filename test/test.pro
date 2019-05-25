@@ -19,6 +19,7 @@ HEADERS += \
     Seller.h \
     Shelf.h \
     Shop.h \
-    b_semaphore.h
+    b_semaphore.h \
+    logger.h
 
 DISTFILES +=
