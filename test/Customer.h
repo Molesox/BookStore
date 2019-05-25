@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include "Book.h"
+#include "Logger.h"
 #include "Shop.h"
 
 using MutexType = std::mutex;
@@ -38,33 +39,59 @@ public:
 
     bool i_will_be_back();
 
-    Shop *m_shop;
-    Library *m_lib;
+    bool is_asking();
+
+    void in_queue();
+
+    void leave();
+
+    Id_t get_id() const;
+
+    const std::string &get_interested_genre() const;
+
 
     MutexType lck_custom;
 
-    std::string m_genre_request;
 
-    std::vector<Id_t> m_Id_requests;
+
+
     std::vector<Id_t> m_demands;
 
     std::vector<Book> m_my_books;
     std::vector<Book> m_read;
 
+    static Id_t c_id;
+
     bool m_new_books;
     bool m_return_book;
 
-    int nb_books2ask;
 
-    c_states m_state;
-    static Id_t c_id;
-    Id_t m_id;
+
+
+
 
 private:
 
-    id_t last_read;
+    Id_t m_id;
 
-    //void init_request(int nb_books);
+    Shop *m_shop;
+    Library *m_lib;
+
+    c_states m_state;
+
+    std::string m_genre_request;
+
+    int nb_books2ask;
+
+
+    std::vector<Id_t> m_Id_requests;
+
+    static FileLogger* logger;
+
+    id_t next_id;
+
+    void init_request(int nb_books);
+
     void update_requests();
 };
 

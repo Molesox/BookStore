@@ -45,6 +45,79 @@ void john_thread(Seller *s) {
     }
 }
 
+void Scenario_One(Library *l){
+    Shop *Bookstore = new Shop(l, 1, 1);
+    Seller john(Bookstore);
+    thread t_JOHN(john_thread, &john);
+
+    vector<Customer *> customers;
+    int a[] = {500, 700, 600};
+    customers.push_back(new Customer(Bookstore, "Biography", 3, a));
+    int b[] = {400,300,200};
+    customers.push_back(new Customer(Bookstore, "Classic", 3, b));
+
+
+    std::mt19937_64 eng{std::random_device{}()};  // or seed however you want
+    std::uniform_int_distribution<> dist{100, 500};
+    thread c_threads[10];
+    for (int i = 0; i < 2; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds{dist(eng)});
+        c_threads[i] = thread(custom_thread, customers[i]);
+    }
+    for (auto &c_thread : c_threads) {
+        c_thread.join();
+    }
+
+    john.quit();
+    Bookstore->close();
+    t_JOHN.join();
+
+    for (auto c : customers) {
+        delete c;
+    }
+    delete l;
+    delete Bookstore;
+}
+
+void Scenario_Two(Library *l){
+    Shop *Bookstore = new Shop(l, 10, 2);
+    Seller john(Bookstore);
+    thread t_JOHN(john_thread, &john);
+
+    vector<Customer *> customers;
+    for (int j = 0; j < 10; ++j) {
+        int a[] = {500 + j, 700 - j, 600 - j};
+        customers.push_back(new Customer(Bookstore, "unknown", 3, a));
+    }
+
+    std::mt19937_64 eng{std::random_device{}()};  // or seed however you want
+    std::uniform_int_distribution<> dist{100, 500};
+    thread c_threads[10];
+    for (int i = 0; i < 10; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds{dist(eng)});
+        c_threads[i] = thread(custom_thread, customers[i]);
+    }
+    for (auto &c_thread : c_threads) {
+        c_thread.join();
+    }
+
+    john.quit();
+    Bookstore->close();
+    t_JOHN.join();
+
+    for (auto c : customers) {
+        delete c;
+    }
+    delete l;
+    delete Bookstore;
+}
+
+
+
+
+
+
+
 int main(int argc, char *argv[]) {
 
     if(argv[1] == nullptr){
@@ -72,7 +145,7 @@ int main(int argc, char *argv[]) {
 
 
     std::mt19937_64 eng{std::random_device{}()};  // or seed however you want
-    std::uniform_int_distribution<> dist{1000, 10000};
+    std::uniform_int_distribution<> dist{100, 1000};
 
 
     thread c_threads[3];
