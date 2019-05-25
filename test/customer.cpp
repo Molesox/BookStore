@@ -113,6 +113,7 @@ void Customer::ask_book() {
                 + "] asking for inexistent book. Id : " + to_string(m_Id_request));
         }
     }
+
     update_requests();
 
     m_state = Asking;//change he's state.

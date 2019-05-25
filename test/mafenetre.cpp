@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
-#include <unistd.h>
+
 #include "Library.h"
 #include "Shop.h"
 #include "Seller.h"
@@ -35,8 +35,7 @@ void custom_thread(Customer *c) {
 
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
+
 
 void john_thread(Seller *s) {
 
@@ -48,7 +47,7 @@ void john_thread(Seller *s) {
     }
 }
 
-#pragma clang diagnostic pop
+
 
 
 
@@ -77,13 +76,17 @@ MaFenetre::MaFenetre() : QWidget()
 
     cBC = new QComboBox(this);
     // A CHANGER QUAND LIE AU RESTE
+
+    //for(auto custom: v_custom){
+      // cBC->addItem("custom.getId() trouver comment concatener ");
+    //}
     cBC->addItem("Customer[1] ");
     cBC->addItem("Customer[2] ");
     cBC->addItem("Customer[3] ");
     // REMPLACER LES EXEMPLES PAR UNE BOUCLE QUI AJOUTE TOUS LES ITEMS CORRESPONDANT DANS LES DONNEES OU DIRECTEMENT LA LISTE
 
     lcd_lm = new QLCDNumber(this);
-    lcd_lm->display(0);
+    lcd_lm->display(16559);
     lcd_lp = new QLCDNumber(this);
     lcd_lp->display(0);
     lcd_c = new QLCDNumber(this);
@@ -199,7 +202,29 @@ void MaFenetre::ouvrirDialogue()
 }
 void MaFenetre::runSOne()
 {
-    //  LANCER LE SCENARIO 1
+
+
+    for (int j = 0; j < 3; ++j) {
+        int a[] = {500 + j, 700 - j, 600 - j};
+        v_custom.push_back(new Customer(migros, "unknown", 3, a));
+    }
+
+
+    std::mt19937_64 eng{std::random_device{}()};  // or seed however you want
+    std::uniform_int_distribution<> dist{10, 100};
+
+
+    std::thread c_threads[3];
+    for (int i = 0; i < 3; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds{dist(eng)});
+        c_threads[i] = std::thread(custom_thread, v_custom[i]);
+
+    }
+
+    for (auto &c_thread : c_threads) {
+        c_thread.join();
+    }
+
 }
 void MaFenetre::runSTwo()
 {
@@ -211,61 +236,31 @@ void MaFenetre::runSThree()
 }
 void MaFenetre::start()
 {
-    Library *l = new Library(R"(/Users/Maxence/Desktop/BookStore-master/book_dataset.csv)");
-        cout << *l << endl << endl;
+        lib = new Library(R"(/Users/Maxence/Desktop/BookStore-master/book_dataset.csv)");
+        cout << *lib << endl << endl;
 
-        Shop *migros = new Shop(l, 2, 2);
+        migros = new Shop(lib, 2, 2);
+        john = new Seller(migros);
 
-        Seller john(migros);
-        std::thread t_JOHN(john_thread, &john);
-
-
-        vector<Customer *> customers;
-        for (int j = 0; j < 3; ++j) {
-            int a[] = {500 + j, 700 - j, 600 - j};
-            customers.push_back(new Customer(migros, "unknown", 3, a));
-        }
-
-
-        std::mt19937_64 eng{std::random_device{}()};  // or seed however you want
-        std::uniform_int_distribution<> dist{10, 100};
-
-
-        std::thread c_threads[3];
-        for (int i = 0; i < 3; ++i) {
-            std::this_thread::sleep_for(std::chrono::milliseconds{dist(eng)});
-            c_threads[i] = std::thread(custom_thread, customers[i]);
-
-        }
-
-
-        for (auto &c_thread : c_threads) {
-            c_thread.join();
-        }
-
-        john.quit();
-        migros->close();
-        t_JOHN.join();
-
-        for (auto c : customers) {
-            delete c;
-        }
-
-        delete l;
-        delete migros;
-
-//        char in = 'n';
-//           while (in != 'y') {
-//                std::cout << "wanna quit [y,n] ";
-//                cin >> in;
-//            }
+        t_JOHN = new std::thread(john_thread, john);
 
 }
 void MaFenetre::stop()
 {
-    //
-    //  "Mettre sur pause" le programme DEPUIS LE MAIN
-    //
+    john->quit();
+    migros->close();
+    t_JOHN->join();
+    cout<<"John leaves the shop!"<<endl;
+
+    for (auto c : v_custom) {
+        delete c;
+    }
+    v_custom.erase(v_custom.begin(),v_custom.end());
+    Customer::c_id = 0;
+    Book::id=0;
+    delete lib;
+    delete t_JOHN;
+    delete migros;
 }
 void MaFenetre::stateChanged()
 {
@@ -274,7 +269,7 @@ void MaFenetre::stateChanged()
 }
 //void MaFenetre::actualiseLCD()
 //{
-    //lcd_lm -> display(Library::getNbBooks());
-    //lcd_lp->display(Customer::getNbBooksTaken()); --> à faire
-    //lcd_lp->display(CUstommer::getNbConsommateurMagasin()); --> à faire quand visite +1 et quand quit -1
+  // lcd_lm -> display(lib->getNbBooks());
+  //  lcd_lp->display(Customer::getNbBooksTaken());
+  // lcd_lp->display(CUstommer::getNbConsommateurMagasin());
 //}

@@ -62,6 +62,8 @@ public:
     std::vector<Book> m_my_books;
     std::vector<Book> m_read;
 
+    static Id_t c_id;
+
     bool m_new_books;
     bool m_return_book;
 
@@ -72,7 +74,6 @@ public:
 
 private:
 
-    static Id_t c_id;
     Id_t m_id;
 
     Shop *m_shop;
