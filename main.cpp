@@ -47,11 +47,18 @@ void john_thread(Seller *s) {
 
 int main(int argc, char *argv[]) {
 
+    if(argv[1] == nullptr){
+        cerr << "No library given as program argument.";
+    }
+
+    FileLogger *logger = new FileLogger("Main", "MainLog.log");
 
     Library *l = new Library(argv[1]);
+    logger->log("Initialized library.");
     cout << *l << endl << endl;
 
     Shop *migros = new Shop(l, 2, 2);
+    logger->log("Initialized the shop.");
 
     Seller john(migros);
     thread t_JOHN(john_thread, &john);
@@ -72,7 +79,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < 3; ++i) {
         std::this_thread::sleep_for(std::chrono::milliseconds{dist(eng)});
         c_threads[i] = thread(custom_thread, customers[i]);
-
+        logger->log("Created thread for Customer[" + to_string(i) + "].");
     }
 
 
@@ -99,5 +106,6 @@ int main(int argc, char *argv[]) {
         cin >> in;
     }
 
+    logger->log("Program terrminated.");
     return 0;
 }

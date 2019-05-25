@@ -53,6 +53,7 @@ int Seller::give_book() {
                         c->m_my_books.push_back(m_shop->m_lib->borrow(c->m_demands[i], c->get_interested_genre()));
                         c->m_new_books = true;//bool flag to notify the customer thread that he
                         // has new books.
+                        logger->log("Gave a book to Customer[" + to_string(c->get_id()) + "].");
                     }
                 }
                 if (c->m_new_books) {//For each given book we down the count of the semaphore.
@@ -119,6 +120,7 @@ void Seller::get_back_book() {
         m_shop->notify_return_customer_all();//Notify all the waiting customers.
         //That they hav returned books. (Or not, it depends of the bool flag for each
         //customer.
+        logger->log("Some books have been returned.");
     }
 
 }
