@@ -9,7 +9,6 @@
 #include <vector>
 #include <string>
 #include "Book.h"
-#include "Logger.h"
 #include "Shop.h"
 
 using MutexType = std::mutex;
@@ -22,8 +21,6 @@ typedef enum states {
 class Shop;
 
 class Customer {
-
-
 
 public:
 
@@ -41,22 +38,14 @@ public:
 
     bool i_will_be_back();
 
-    bool is_asking();
-
-    void in_queue();
-
-    void leave();
-
-    Id_t get_id() const;
-
-    const std::string &get_interested_genre() const;
-
+    Shop *m_shop;
+    Library *m_lib;
 
     MutexType lck_custom;
 
+    std::string m_genre_request;
 
-
-
+    std::vector<Id_t> m_Id_requests;
     std::vector<Id_t> m_demands;
 
     std::vector<Book> m_my_books;
@@ -65,34 +54,17 @@ public:
     bool m_new_books;
     bool m_return_book;
 
+    int nb_books2ask;
 
-
-
-
-
-private:
-
+    c_states m_state;
     static Id_t c_id;
     Id_t m_id;
 
-    Shop *m_shop;
-    Library *m_lib;
+private:
 
-    c_states m_state;
+    id_t last_read;
 
-    std::string m_genre_request;
-
-    int nb_books2ask;
-
-
-    std::vector<Id_t> m_Id_requests;
-
-    static FileLogger* logger;
-
-    id_t next_id;
-
-    void init_request(int nb_books);
-
+    //void init_request(int nb_books);
     void update_requests();
 };
 

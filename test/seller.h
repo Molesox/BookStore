@@ -7,12 +7,11 @@
 
 
 #include "Customer.h"
-#include "Logger.h"
 
 class Customer;
 
 typedef enum seller_states {
-    Sleep, Giving, Returning, Quit
+    Sleep, Giving, returning
 } s_states;
 
 class Seller {
@@ -21,16 +20,14 @@ public:
 
     Seller(Shop *shop);
 
-    int give_book();
+    void give_book();
 
     void get_back_book();
 
-    void quit();
 
-private:
     Shop *m_shop;
     s_states m_state;
-    FileLogger *logger = new FileLogger("John", "John.log");
+private:
 };
 
 

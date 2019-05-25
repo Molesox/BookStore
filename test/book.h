@@ -62,3 +62,4 @@ private:
 std::ostream &operator<<(std::ostream &os, const Book &book);
 
 #endif //BOOKSTORE_BOOK_H
+

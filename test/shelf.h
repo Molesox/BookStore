@@ -63,7 +63,7 @@ public:
 
     const hash_map_books_t &getMShelf() const;
 
-    const Id_t get_next_book_id(int after);
+    const id_t get_next_book_id(int after);
 
 };
 

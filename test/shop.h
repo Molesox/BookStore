@@ -32,19 +32,12 @@ public:
 
     bool is_empty();
 
-    void close();
-
-    void notify_seller();
-    void notify_return_seller();
-
-    void notify_return_customer_all();
-
-    size_t max_books() const;
-
-
     std::vector<Customer *> m_customers;
 
     Library *m_lib;
+
+    size_t m_nb_place;
+    size_t m_max_books;
 
     MutexType lck_shop;
 
@@ -56,10 +49,6 @@ public:
 
     semaphore *seller;
     semaphore *return_seller;
-
-private:
-    size_t m_nb_place;
-    size_t m_max_books;
 
 
 };
