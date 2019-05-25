@@ -214,7 +214,7 @@ void Customer::init_request(int nb_books){ //add nb_books random book ids to the
     //Set the next id var if we have not yet tried to read book ids
     auto it = s.getMShelf().begin();
     if(next_id == -1){
-        next_id = it->first
+        next_id = it->first;
     }
 
     //Iterate towards the next ids
