@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
-#include <unistd.h>
+
 #include "Library.h"
 #include "Shop.h"
 #include "Seller.h"
@@ -11,7 +11,6 @@
 #include <chrono>
 #include <atomic>
 #include <QLCDNumber>
-
 
 using namespace std;
 
@@ -35,9 +34,6 @@ void custom_thread(Customer *c) {
 
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
-
 void john_thread(Seller *s) {
 
     while (true) {
@@ -48,18 +44,16 @@ void john_thread(Seller *s) {
     }
 }
 
-#pragma clang diagnostic pop
-
-
-
 
 MaFenetre::MaFenetre() : QWidget()
 {
+
     setFixedSize(1200, 400);
 
     fenetre = new QWidget;
     fenetre->setBaseSize(1200,400);
 
+    //Création des boutons
     boutonStop = new QPushButton("Stop",this);
     boutonStart = new QPushButton("Start",this);
     boutonScenario1 = new QPushButton("Lancer Scénario 1",this);
@@ -68,6 +62,7 @@ MaFenetre::MaFenetre() : QWidget()
     boutonQuitter = new QPushButton("Quitter",this);
     boutonAjouterLivre = new QPushButton("Ajouter un Livre",this);
 
+    //Création des Labels
     labelLM = new QLabel("Nombre de livres dans le magasin :");
     labelLP = new QLabel("Nombre de livres pris depuis le début :");
     labelC = new QLabel("Nombre de consommateurs dans le magasin :");
@@ -75,20 +70,25 @@ MaFenetre::MaFenetre() : QWidget()
     labelCustomerState1 = new QLabel("Etat du consommateur sélectionné");
     labelCustomerState2 = new QLabel("AUCUN");
 
+    //Création de la ComboBox
     cBC = new QComboBox(this);
-    // A CHANGER QUAND LIE AU RESTE
+    //for(auto custom: v_custom){
+      // cBC->addItem("custom.getId() trouver comment concaténer ");
+    //}
+    // Pour l'instant, on ajoute les consommateurs manuellement
     cBC->addItem("Customer[1] ");
     cBC->addItem("Customer[2] ");
     cBC->addItem("Customer[3] ");
-    // REMPLACER LES EXEMPLES PAR UNE BOUCLE QUI AJOUTE TOUS LES ITEMS CORRESPONDANT DANS LES DONNEES OU DIRECTEMENT LA LISTE
 
+    //Création des LCDs
     lcd_lm = new QLCDNumber(this);
-    lcd_lm->display(0);
+    lcd_lm->display(16559);
     lcd_lp = new QLCDNumber(this);
     lcd_lp->display(0);
     lcd_c = new QLCDNumber(this);
     lcd_c->display(0);
 
+    //Création des layouts
     layoutH0 = new QHBoxLayout;
     layoutV0  = new QVBoxLayout;
     layoutV1  = new QVBoxLayout;
@@ -97,16 +97,15 @@ MaFenetre::MaFenetre() : QWidget()
     layoutG0 = new QGridLayout;
     layoutG1 = new QGridLayout;
 
+    //Structure des layouts
     layoutH0->addLayout(layoutV0);
     layoutH0->addLayout(layoutV1);
-
     layoutV0->addLayout(layoutG0);
-
     layoutV1->addLayout(layoutV2);
     layoutV1->addLayout(layoutV3);
-
     layoutV2->addLayout(layoutG1);
 
+    //Ajout des Widgets aux layouts
     layoutG0->addWidget(labelLM,0,0);
     layoutG0->addWidget(labelLP,1,0);
     layoutG0->addWidget(labelC,2,0);
@@ -117,21 +116,20 @@ MaFenetre::MaFenetre() : QWidget()
     layoutG0->addWidget(labelCustomerState1,7,0);
     layoutG0->addWidget(labelCustomerState2,7,1);
     layoutG0->addWidget(cBC,6,1,1,2);
-
     layoutV0->addWidget(boutonStop);
     layoutV0->addWidget(boutonStart);
     layoutV0->addWidget(boutonScenario1);
     layoutV0->addWidget(boutonScenario2);
     layoutV0->addWidget(boutonScenario3);
-
     layoutG1->addWidget(boutonQuitter,2,1);
-
     layoutV3->addWidget(boutonAjouterLivre);
 
+    //Affichage de la fenêtre
     fenetre->setLayout(layoutH0);
     fenetre->show();
 
-
+    //Signaux et réactions
+    //cBC ne marche pas correctement
     QObject::connect(boutonQuitter, SIGNAL(clicked()),qApp, SLOT(quit()));
     QObject::connect(boutonAjouterLivre, SIGNAL(clicked()), this, SLOT(ouvrirDialogue()));
     QObject::connect(cBC, SIGNAL(activated()),this,SLOT(stateChanged));
@@ -143,18 +141,20 @@ MaFenetre::MaFenetre() : QWidget()
 
 }
 
-void MaFenetre::changerLargeur(int largeur)
-{
-    setFixedSize(largeur,1200);
-}
 void MaFenetre::ouvrirDialogue()
 {
+    //Variables pour stocker les résultats
     QString namef = "rien";
     QString auteurf = "personne";
     QString datef = "jamais";
     QString genref = "aucun";
     QString idf = "aucun";
     bool ok = false;
+
+    //Questions relatives au nouveau livres.
+    //Si vide, erreur, sinon question suivante.
+    //Si toutes les questions répondues, enregistrement.
+
     QString name = QInputDialog::getText(this, "Name","Quel est le nom du livre ?", QLineEdit::Normal, QString(), &ok);
     if (ok && !name.isEmpty())
     {
@@ -179,11 +179,9 @@ void MaFenetre::ouvrirDialogue()
                     genref = genre;
                     QMessageBox::information(this, "Genre", "Merci, le genre \""+ genre+ "\" a été enregistré.");
                     QMessageBox::information(this, "Résultat", "Voici le résultat de l'inscription :\nTitre : \""+ namef + "\"\nAuteur : \""+ auteurf+ "\"\nDate : \""+datef+ "\"\nGenre : \""+ genref);
-                        //
-                        //utiliser "add_book(namef,auteurf,datef,genref)";
+                        //utiliser Shelf::add_book() avec namef,auteurf,datef,genref
                         //int n = lcd_lm->value();
                         //lcd_lm->display(n+1);
-                        //
                 } else {
                     QMessageBox::critical(this, "Genre", "Le genre est vide, veuillez recommencer.");
                 }
@@ -199,7 +197,29 @@ void MaFenetre::ouvrirDialogue()
 }
 void MaFenetre::runSOne()
 {
-    //  LANCER LE SCENARIO 1
+
+
+    for (int j = 0; j < 3; ++j) {
+        int a[] = {500 + j, 700 - j, 600 - j};
+        v_custom.push_back(new Customer(migros, "unknown", 3, a));
+    }
+
+
+    std::mt19937_64 eng{std::random_device{}()};  // or seed however you want
+    std::uniform_int_distribution<> dist{10, 100};
+
+
+    std::thread c_threads[3];
+    for (int i = 0; i < 3; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds{dist(eng)});
+        c_threads[i] = std::thread(custom_thread, v_custom[i]);
+
+    }
+
+    for (auto &c_thread : c_threads) {
+        c_thread.join();
+    }
+
 }
 void MaFenetre::runSTwo()
 {
@@ -209,72 +229,45 @@ void MaFenetre::runSThree()
 {
     //  LANCER LE SCENARIO 3
 }
+// Sert à "mettre le store en marche" avant de choisir un scénario.
 void MaFenetre::start()
 {
-    Library *l = new Library(R"(/Users/Maxence/Desktop/BookStore-master/book_dataset.csv)");
-        cout << *l << endl << endl;
+        lib = new Library(R"(/Users/Maxence/Desktop/BookStore-master/book_dataset.csv)");
+        cout << *lib << endl << endl;
 
-        Shop *migros = new Shop(l, 2, 2);
+        migros = new Shop(lib, 2, 2);
+        john = new Seller(migros);
 
-        Seller john(migros);
-        std::thread t_JOHN(john_thread, &john);
-
-
-        vector<Customer *> customers;
-        for (int j = 0; j < 3; ++j) {
-            int a[] = {500 + j, 700 - j, 600 - j};
-            customers.push_back(new Customer(migros, "unknown", 3, a));
-        }
-
-
-        std::mt19937_64 eng{std::random_device{}()};  // or seed however you want
-        std::uniform_int_distribution<> dist{10, 100};
-
-
-        std::thread c_threads[3];
-        for (int i = 0; i < 3; ++i) {
-            std::this_thread::sleep_for(std::chrono::milliseconds{dist(eng)});
-            c_threads[i] = std::thread(custom_thread, customers[i]);
-
-        }
-
-
-        for (auto &c_thread : c_threads) {
-            c_thread.join();
-        }
-
-        john.quit();
-        migros->close();
-        t_JOHN.join();
-
-        for (auto c : customers) {
-            delete c;
-        }
-
-        delete l;
-        delete migros;
-
-//        char in = 'n';
-//           while (in != 'y') {
-//                std::cout << "wanna quit [y,n] ";
-//                cin >> in;
-//            }
+        t_JOHN = new std::thread(john_thread, john);
 
 }
+// Sert à "finir" un scénario. "John part du magasin".
 void MaFenetre::stop()
 {
-    //
-    //  "Mettre sur pause" le programme DEPUIS LE MAIN
-    //
+    john->quit();
+    migros->close();
+    t_JOHN->join();
+    cout<<"John leaves the shop!"<<endl;
+
+    for (auto c : v_custom) {
+        delete c;
+    }
+    v_custom.erase(v_custom.begin(),v_custom.end());
+    Customer::c_id = 0;
+    Book::id=0;
+    delete lib;
+    delete t_JOHN;
+    delete migros;
 }
+// Si la ComboBox a changé, sert à mettre à jour le label de l'état du consommateur choisi dans la ComboBox.
 void MaFenetre::stateChanged()
 {
     labelCustomerState2->setText("//ETAT DU CUSTOMER [...]");
-    fenetre->show();
 }
+// Sert à actualiser les LCDs
 //void MaFenetre::actualiseLCD()
 //{
-    //lcd_lm -> display(Library::getNbBooks());
-    //lcd_lp->display(Customer::getNbBooksTaken()); --> à faire
-    //lcd_lp->display(CUstommer::getNbConsommateurMagasin()); --> à faire quand visite +1 et quand quit -1
+  // lcd_lm -> display(lib->getNbBooks());
+  // lcd_lp->display(Customer::getNbBooksTaken());
+  // lcd_lp->display(CUstommer::getNbConsommateurMagasin());
 //}

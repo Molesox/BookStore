@@ -105,6 +105,7 @@ void Customer::ask_book() {
                  << m_Id_request << endl;
         }
     }
+
     update_requests();
 
     m_state = Asking;//change he's state.

@@ -47,11 +47,12 @@ public:
     std::string m_date;
     std::string m_genre;
 
+    static Id_t id; //Initialised in cpp file to 0
+
 
 private:
     int m_nb_reads;
     bool m_is_borrowed;
-    static Id_t id;//Initialised in cpp file to 0
     Id_t m_id;
     Id_t m_wiki_id;
 
