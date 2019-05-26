@@ -44,6 +44,7 @@ int Seller::give_book() {
     WriteLock shop_lock(m_shop->lck_shop);//Shared resource of the store.
 
     for (auto c : m_shop->m_customers) {//For each customer
+        bool control = false;
         WriteLock custom_lock(c->lck_custom, try_to_lock);//We try to lock him
         if (custom_lock.owns_lock()) {//if the lock is successful,
             if (c->is_asking()) {//and is asking for books,
@@ -56,11 +57,13 @@ int Seller::give_book() {
                             c->m_new_books = true;//bool flag to notify the customer thread that he
                             // has new books.
                             logger->log("Gave a book to Customer[" + to_string(c->get_id()) + "].");
+                        } else {
+                            control = true;
                         }
 
                     }
                 }
-                if (c->m_new_books) {//For each given book we down the count of the semaphore.
+                if (c->m_new_books && control) {//For each given book we down the count of the semaphore.
                     m_shop->seller->down();
                 }
             }

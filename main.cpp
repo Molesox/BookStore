@@ -42,7 +42,7 @@ void john_thread(Seller *s) {
     while (true) {
 
         if (s->give_book() == -2) {
-
+            std::cout << " john leaves " << std::endl;
             break;
         }
         s->get_back_book();
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
     char in = 'n';
     while (in != 'q') {
 
-        cout << "Hi, select scenario 1, 2 or 3" << endl;
+        cout << "Hi, select scenario 1, 2, 3 or 'q' to quit" << endl;
         cin >> in;
 
         if (in == '1') {

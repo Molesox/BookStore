@@ -113,9 +113,9 @@ void Customer::ask_book() {
                             + "] asking for inexistent book. Id : " + to_string(m_Id_request));
             }
         }
-
+        update_requests();
     }
-    update_requests();
+
     m_state = Asking;//change he's state.
     m_shop->notify_seller();//notify the seller that he has some books demands
     WriteLock shop_lock(m_shop->lck_shop);//Waits for the seller.
@@ -231,8 +231,9 @@ void Customer::init_request(int nb_books) {     //add nb_books random book ids t
     } else {
 
         std::random_shuffle(list_ids.begin(), list_ids.end());
+        std::cout << " custom id : requests:  " << m_id << std::endl;
         for (int i = 0; i < nb_books && i < list_ids.size(); ++i) {
-
+            std::cout << " id " << list_ids[i] << std::endl;
             m_Id_requests.push_back(list_ids[i]);
         }
 
