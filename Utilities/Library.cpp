@@ -95,7 +95,10 @@ void Library::init_max_shelf() {
 }
 
 //METHODS
-
+/**
+ * Prints general information about the current library
+ * @param flux Path used to print the information.
+ */
 void Library::print(std::ostream &flux) const {
     flux << "The library loaded from : " << m_filename << endl;
     flux << "Contains:\n"
@@ -106,7 +109,9 @@ void Library::print(std::ostream &flux) const {
 
 }
 
-
+/**
+ * Prints the occurences of the genres.
+ */
 void Library::print_genres_occurences() const {
 
     for (const auto &pair:m_library) {
@@ -115,6 +120,10 @@ void Library::print_genres_occurences() const {
     }
 }
 
+/**
+ * Prints the books corresponding to the given id
+ * @param id Id of the Book to print
+ */
 void Library::print_1book(Id_t id) const {
 
     for (const auto &shelf : m_library) {
@@ -129,6 +138,12 @@ void Library::print_1book(Id_t id) const {
     cout << "Book not found" << endl;
 }
 
+/**
+ * Checks if a Book with the given id exists
+ * @param genre The genre of the given Book
+ * @param id The id of the Book
+ * @return true if the Book exists, false otherwise
+ */
 const bool Library::book_exists(const std::string &genre, const Id_t id) const {
     string lg;
     for (const auto &s : m_library) {
@@ -141,6 +156,12 @@ const bool Library::book_exists(const std::string &genre, const Id_t id) const {
     return false;
 }
 
+/**
+ * Checks if a Book with the given id is borrowed
+ * @param genre The genre of the Book
+ * @param id The id of the Book
+ * @return true if the Book is borrowed, false otherwise
+ */
 const bool Library::is_borrowed(const std::string &genre, const Id_t id) const {
     string lg;
     for (const auto &s : m_library) {
@@ -168,7 +189,11 @@ size_t Library::getBiggestShelf() const {
     return m_max_shelf;
 }
 
-
+/**
+ * Gets a pointer to a Book from the .csv source
+ * @param line the line in the .csv at which the Book information is
+ * @return Pointer to the new Book
+ */
 Book *Library::extract_book(const std::string &line) {
     static int end_id, end_title, end_author, end_date, end_genre;//end positions in .csv file
     static string title, author, date, genre;
@@ -193,6 +218,13 @@ Book *Library::extract_book(const std::string &line) {
 
 }
 
+
+/**
+ * Borrow a book from the library
+ * @param id The id of the Book to borrow
+ * @param genre the genre of the Book
+ * @return The Book that is to be borrrowed
+ */
 Book Library::borrow(Id_t id, const std::string &genre) {
     string lg;
     for (auto &s : m_library) {
@@ -209,6 +241,10 @@ Book Library::borrow(Id_t id, const std::string &genre) {
          << id << " with genre :" << genre << endl;
 }
 
+/**
+ * Give back a book
+ * @param b The Book to give back
+ */
 void Library::unborrow(const Book &b) {
     string lg;
     for (auto &s : m_library) {
@@ -219,6 +255,11 @@ void Library::unborrow(const Book &b) {
     }
 }
 
+/**
+ * Get a Shelf by it's genre string
+ * @param genre The genre of the wanted Shelf
+ * @return The Shelf that corresponds to the genre string, if it exists.
+ */
 Shelf Library::get_shelf_by_genre(const std::string genre) const {
     string lg;
     for (auto &s : m_library) {
@@ -231,6 +272,11 @@ Shelf Library::get_shelf_by_genre(const std::string genre) const {
          << genre << endl;
 }
 
+/**
+ * Get a Book title by id
+ * @param id The id of the Book
+ * @return The title that corresponds.
+ */
 const string Library::get_title_by_Id(Id_t id){
     for (const auto &shelf : m_library) {
 
@@ -242,6 +288,11 @@ const string Library::get_title_by_Id(Id_t id){
     }
 }
 
+/**
+ * Returns a vector containing all ids of the given genre
+ * @param genre The wanted genre
+ * @return vector of ids that correspond to the genre
+ */
 std::vector<Id_t> Library::getIds(std::string genre) {
     string lg;
     for (auto &s : m_library) {

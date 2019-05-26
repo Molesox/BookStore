@@ -111,7 +111,6 @@ int main(int argc, char *argv[]) {
 
             t_sam.join();
             t_kim.join();
-
             t_tun.join();
             t_ann.join();
 
@@ -128,7 +127,7 @@ int main(int argc, char *argv[]) {
 
     delete l;
 
-    logger->log("Program terrminated.");
+    logger->log("Program terminated.");
     delete logger;
     return 0;
 }

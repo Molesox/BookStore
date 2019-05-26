@@ -10,7 +10,10 @@ using namespace std;
 
 Seller::Seller(Shop *shop) : m_shop(shop), m_state(Sleep) {}
 
-
+/**
+ * Give a requested book to a customer
+ * @return -2 if quitting, -1 if the semaphore couldn't be downed, 0 otherwise
+ */
 int Seller::give_book() {
 
     if (m_state == Sleep) {
@@ -77,6 +80,9 @@ int Seller::give_book() {
     return 0;
 }
 
+/**
+ * Get back a book from a customer
+ */
 void Seller::get_back_book() {
 
     bool done = false;//Bool condition for send notification.
@@ -134,7 +140,5 @@ void Seller::get_back_book() {
 }
 
 void Seller::quit() {
-
     m_state = Quit;
-
 }

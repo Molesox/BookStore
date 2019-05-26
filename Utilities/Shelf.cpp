@@ -13,7 +13,6 @@ using namespace std;
  * with the same Id it will be removed.
  * @param pointer to the book to add.
  */
-
 void Shelf::add_book(Book *book) {
 
     WriteLock lock1(m_mutex);
@@ -52,6 +51,11 @@ Book *Shelf::borrow(Id_t id) {
     return b;
 }
 
+/**
+ * Checks if a Book exists in the current shelf
+ * @param id id of the Book
+ * @return true if it exists, false otherwise
+ */
 const bool Shelf::book_exists(const Id_t id) const {
     ReadLock lock1(m_mutex);
 
@@ -64,6 +68,11 @@ const bool Shelf::book_exists(const Id_t id) const {
     return true;
 }
 
+/**
+ * Checks if a Book is borrowed.
+ * @param id the id of the Book to check
+ * @return true if borrowed, false otherwise
+ */
 const bool Shelf::is_borrowed(const Id_t id) const {
     ReadLock lock1(m_mutex);
     auto b = m_shelf.find(id);
@@ -182,6 +191,10 @@ const size_t Shelf::nb_books() const {
     return m_shelf.size();
 }
 
+/**
+ * Give back a Book.
+ * @param id The id of the book to give back
+ */
 void Shelf::unborrow(Id_t id) {
 
     WriteLock lck(m_mutex);
@@ -195,7 +208,6 @@ void Shelf::unborrow(Id_t id) {
 
 
 vector<Id_t> Shelf::getMListIds() const {
-
     return m_list_ids;
 }
 

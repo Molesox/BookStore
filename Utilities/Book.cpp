@@ -30,6 +30,10 @@ Book::Book(std::string name, std::string author,
 
 //METHODS
 
+/**
+ * Prints general information about the current Book.
+ * @param flux The output path used to print the information.
+ */
 void Book::print(std::ostream &flux) const {
 
     flux << "Id : " << m_id << "\n";
@@ -48,10 +52,16 @@ void Book::print(std::ostream &flux) const {
     flux << "\n";
 }
 
+/**
+ * Sets the state of the current Book to 'borrowed'.
+ */
 void Book::borrow() {
     m_is_borrowed = true;
 }
 
+/**
+ * Sets the state of the current Book to 'not borrowed'.
+ */
 void Book::unborrow() {
     m_is_borrowed = false;
 }

@@ -22,7 +22,11 @@ Shop::~Shop() {
 
 }
 
-
+/**
+ * Add a customer in the shop
+ * @param c The customer to add
+ * @return -1 if failed, 0 if succeeded.
+ */
 int Shop::add_customer(Customer *c) {
 
     WriteLock s_lck(lck_shop);//Locks the shop.
@@ -50,7 +54,11 @@ int Shop::add_customer(Customer *c) {
     return 0;
 }
 
-
+/**
+ * Remove a customer from the shop
+ * @param c The customer to remove
+ * @return -1 if failed, 0 if succeeded
+ */
 int Shop::remove_customer(Customer *c) {
 
 

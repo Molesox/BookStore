@@ -41,6 +41,10 @@ Customer::Customer(Shop *shop, string interestGenre, int nb_books) {
 
 }
 
+/**
+ * Try to visit the shop
+ * @return -1 if failed, 0 if succeeded
+ */
 int Customer::visit_shop() {
 
     if (m_state != Wait)return -1;//Must be waiting to enter in the shop.
@@ -62,6 +66,10 @@ int Customer::visit_shop() {
     return -1;//Informs main that visit failed.
 }
 
+/**
+ * Quit the shop
+ * @return -1 if failed, 0 if succeeded
+ */
 int Customer::quit_shop() {
 
     if (m_shop->remove_customer(this) == 0) {//The shop is locked internally.
@@ -79,6 +87,10 @@ int Customer::quit_shop() {
     return -1;
 }
 
+/**
+ * Wait for the Shop lock and try to enter again
+ * @return true when succeeded
+ */
 bool Customer::i_will_be_back() {
 
     WriteLock shop_lock(m_shop->lck_shop);
@@ -91,6 +103,9 @@ bool Customer::i_will_be_back() {
     return true;
 }
 
+/**
+ * Ask for a book from the personal requests list.
+ */
 void Customer::ask_book() {
 
     if (m_state == InQueue) {
@@ -133,6 +148,9 @@ void Customer::ask_book() {
     // First initialisation is in customer constructor.
 }
 
+/**
+ * Update the requests list for this customer.
+ */
 void Customer::update_requests() {
     //TODO: This is not optimized, maybe there is a way to do it at the same time when we push the demands.
     vector<Id_t> temp;
@@ -144,6 +162,9 @@ void Customer::update_requests() {
     m_Id_requests = temp;
 }
 
+/**
+ * Simulate the reading process by waiting some time, then move Books to the list of read Books.
+ */
 void Customer::read_book() {
 
     if (m_state == Reading) {
@@ -173,6 +194,10 @@ void Customer::read_book() {
 
 }
 
+/**
+ * Attempt to give back the owned Books at the Shop.
+ * @return -1 if failed, 0 if succeeded.
+ */
 int Customer::return_book() {
 
     if (m_return_book) {//If he has books to return,
@@ -217,25 +242,22 @@ const string &Customer::get_interested_genre() const {
     return m_genre_request;
 }
 
-
+/**
+ * Adds nb_books new Books to the requests list of this customer
+ * @param nb_books The number of books to attempt to add
+ */
 void Customer::init_request(int nb_books) {     //add nb_books random book ids to the request vector of this customer
-
-
     auto list_ids = m_lib->getIds(m_genre_request);
 
-
     if (nb_books == -1) {
-
         m_Id_requests = list_ids;
-
-    } else {
-
+    }
+    else {
         std::random_shuffle(list_ids.begin(), list_ids.end());
         std::cout << " custom id : " << m_id << "requests:  " << std::endl;
         for (int i = 0; i < nb_books && i < list_ids.size(); ++i) {
             std::cout << " id " << list_ids[i] << " title " << m_lib->get_title_by_Id(list_ids[i]) << std::endl;
             m_Id_requests.push_back(list_ids[i]);
         }
-
     }
 }
