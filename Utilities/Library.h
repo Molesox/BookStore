@@ -63,6 +63,7 @@ public:
 
     const bool is_borrowed(const std::string &genre, const Id_t id) const;
 
+    const std::string get_title_by_Id(Id_t id);
 
     //ATTRIBUTES
 

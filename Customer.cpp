@@ -51,7 +51,7 @@ int Customer::visit_shop() {
         m_shop->cv_added.wait(shop_lock, [&] { return m_state == InQueue; });//Wait shop confirmation.
 
         std::cout << "Customer[" << m_id << "] visits shop." << std::endl;
-        logger->log("Customer[" + to_string(m_id) + "] visits shop.");
+        logger->log("Customer[" + to_string(m_id) + "] visits shop. He's interested in " + m_genre_request);
         shop_lock.unlock();
 
         return 0;
@@ -123,7 +123,7 @@ void Customer::ask_book() {
     m_shop->cv_custom.wait(shop_lock, [&] { return m_new_books; });//bool flag.
 
     std::cout << "Customer[" << m_id << "] successfully get new books." << std::endl;
-    logger->log("Customer[" + to_string(m_id) + "] successfully get new books.");
+    logger->log("Customer[" + to_string(m_id) + "] successfully got new books.");
     shop_lock.unlock();//can be done just after the wait. (just for terminal print)
 
     nb_books2ask -= m_my_books.size();//decrements the books to ask
@@ -161,11 +161,11 @@ void Customer::read_book() {
         //TODO:: kick this out at the end of project.
         WriteLock shop_lock(m_shop->lck_shop);//Just for homogeneous print int terminal.
         std::cout << "Customer[" << m_id << "] has read." << std::endl;
-        logger->log("Customer[" + to_string(m_id) + "] has read."),
-                shop_lock.unlock();
+        logger->log("Customer[" + to_string(m_id) + "] is done reading.");
+        shop_lock.unlock();
 
     } else {
-        //To read we must be in read state otherwise it doesn't make sens.
+        //To read we must be in read state otherwise it doesn't make sense.
         cerr << "Fatal error." << endl;
         logger->log(FileLogger::e_logType::LOG_ERROR + "Fatal error.");
         exit(88);

@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
     char in = 'n';
     while (in != 'q') {
 
-        cout << "Hi, select scenario 1, 2 or 3" << endl;
+        cout << "Hi, select scenario 1, 2 or 3 (or quit with q)" << endl;
         cin >> in;
 
         if (in == '1') {
