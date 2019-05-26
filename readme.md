@@ -17,19 +17,20 @@ time of writing, 16559 books in this database.
 
 ## Getting Started
 
-To get started using our program, just run the main executable. This will start the GUI, 
-which contains buttons to start the individual scenarios.
+To get started using our program, run the main executable with, as program parameter,
+the path to the library csv file.
 
 ### Running the individual scenarios
 
-Our GUI handles the starting of the scenarios. Simply start it and press the button
-that corresponds to the scenario that you want to run.
+Our program handles the starting of the scenarios. Simply run it, and it will ask you
+which scenario you want to run.
 
-### Data on the GUI
+### Data in the logs
 
-On the interface, there are buttons allowing you to start or stop the scenarios.
-There are also some data points, for example how many customers are currently in the shop,
-how many books there are in total and what the state of a specific customer is.
+The program, as soon as it is turned off, will generate 3 log files.
+* One for the main method, containing some less interesting raw information
+* One for John, containing information about his exchanges with the customers
+* One for all the customers, indicating the books they took and the order in which things happened.
 
 ### Inner workings of the project
 
@@ -57,11 +58,6 @@ but on is updated more often on GitHub.
 ## Authors
 
 * **Daniel Sanz**
-* **Maxence Feller**
 * **Bastian Stadelmann**
+* **Maxence Feller**
 
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
