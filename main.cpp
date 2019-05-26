@@ -128,9 +128,9 @@ int main(int argc, char *argv[]) {
             Seller john(denner);
             thread t_john(john_thread, &john);
 
-            Customer Samantha(denner, "Utopian and dystopian fiction", 4);
-            Customer Kimberly(denner, "Vampire fiction", 2);
-            Customer Tungstene(denner, "Thriller", 2);
+            Customer Samantha(denner, "Sports", ALL);
+            Customer Kimberly(denner, "Spirituality", ALL);
+            Customer Tungstene(denner, "Serial", ALL);
 
             thread t_sam(custom_thread, &Samantha);
             thread t_kim(custom_thread, &Kimberly);
