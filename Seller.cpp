@@ -17,7 +17,7 @@ int Seller::give_book() {
 
         WriteLock shop_lock(m_shop->lck_shop);//Seller wait for some customers
         cout << "John sleeps" << endl;
-        logger->log("John sleeps");
+        logger->log("John goes to sleep");
         m_shop->cv_added.wait(shop_lock);//If he's notified,
 
         if(m_state==Quit){
@@ -56,7 +56,8 @@ int Seller::give_book() {
                             c->m_my_books.push_back(m_shop->m_lib->borrow(c->m_demands[i], c->get_interested_genre()));
                             c->m_new_books = true;//bool flag to notify the customer thread that he
                             // has new books.
-                            logger->log("Gave a book to Customer[" + to_string(c->get_id()) + "].");
+                            logger->log("Gave book \"" + m_shop->m_lib->get_title_by_Id(c->m_demands[i]) + "\" to Customer[" + to_string(c->get_id()) + "].");
+
                         } else {
                             control = true;
                         }

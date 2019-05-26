@@ -42,7 +42,7 @@ void john_thread(Seller *s) {
     while (true) {
 
         if (s->give_book() == -2) {
-            std::cout << " john leaves " << std::endl;
+
             break;
         }
         s->get_back_book();

@@ -231,6 +231,17 @@ Shelf Library::get_shelf_by_genre(const std::string genre) const {
          << genre << endl;
 }
 
+const string Library::get_title_by_Id(Id_t id){
+    for (const auto &shelf : m_library) {
+
+        auto temp = shelf.getMShelf().find(id);
+
+        if (temp != shelf.getMShelf().end()) {
+            return temp->second->m_name;
+        }
+    }
+}
+
 std::vector<Id_t> Library::getIds(std::string genre) {
     string lg;
     for (auto &s : m_library) {
