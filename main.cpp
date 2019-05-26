@@ -93,16 +93,16 @@ int main(int argc, char *argv[]) {
             delete migros;
 
         } else if (in == '2') {
-            Shop *migros = new Shop(l, 4, 2);
+            Shop *coop = new Shop(l, 4, 2);
             logger->log("Initialized the shop. Scenario 2");
 
-            Seller john(migros);
+            Seller john(coop);
             thread t_john(john_thread, &john);
 
-            Customer Samantha(migros, "Treatise", 4);
-            Customer Kimberly(migros, "Treatise", 6);
-            Customer Tungstene(migros, "Treatise", 7);
-            Customer Anne(migros, "Treatise", 6);
+            Customer Samantha(coop, "Treatise", 4);
+            Customer Kimberly(coop, "Treatise", 6);
+            Customer Tungstene(coop, "Treatise", 7);
+            Customer Anne(coop, "Treatise", 6);
 
             thread t_sam(custom_thread, &Samantha);
             thread t_kim(custom_thread, &Kimberly);
@@ -111,22 +111,48 @@ int main(int argc, char *argv[]) {
 
             t_sam.join();
             t_kim.join();
+
             t_tun.join();
             t_ann.join();
 
             john.quit();
-            migros->close();
+            coop->close();
 
             t_john.join();
 
-            delete migros;
+            delete coop;
+        } else if (in == '3') {
+            Shop *denner = new Shop(l, 2, 3);
+            logger->log("Initialized the shop. Scenario 3");
+
+            Seller john(denner);
+            thread t_john(john_thread, &john);
+
+            Customer Samantha(denner, "Utopian and dystopian fiction", 4);
+            Customer Kimberly(denner, "Vampire fiction", 2);
+            Customer Tungstene(denner, "Thriller", 2);
+
+            thread t_sam(custom_thread, &Samantha);
+            thread t_kim(custom_thread, &Kimberly);
+            thread t_tun(custom_thread, &Tungstene);
+
+            t_sam.join();
+            t_kim.join();
+            t_tun.join();
+
+            john.quit();
+            denner->close();
+
+            t_john.join();
+            delete denner;
+
         }
 
 
     }
 
-    delete l;
 
+    delete l;
     logger->log("Program terminated.");
     delete logger;
     return 0;

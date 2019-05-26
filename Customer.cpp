@@ -247,17 +247,29 @@ const string &Customer::get_interested_genre() const {
  * @param nb_books The number of books to attempt to add
  */
 void Customer::init_request(int nb_books) {     //add nb_books random book ids to the request vector of this customer
+
+
     auto list_ids = m_lib->getIds(m_genre_request);
 
+
     if (nb_books == -1) {
+
         m_Id_requests = list_ids;
-    }
-    else {
+
+    } else {
+
         std::random_shuffle(list_ids.begin(), list_ids.end());
-        std::cout << " custom id : " << m_id << "requests:  " << std::endl;
+
+        std::cout << "Customer[" << m_id << "] requests:  " << std::endl;
+        logger->log("Customer[" + to_string(m_id) + "] requests:");
+
         for (int i = 0; i < nb_books && i < list_ids.size(); ++i) {
-            std::cout << " id " << list_ids[i] << " title " << m_lib->get_title_by_Id(list_ids[i]) << std::endl;
+
+            std::cout << "book[" << list_ids[i] << "] : " << m_lib->get_title_by_Id(list_ids[i]) << std::endl;
+            logger->log("Book[" + to_string(list_ids[i]) + "] : " + m_lib->get_title_by_Id(list_ids[i]));
+
             m_Id_requests.push_back(list_ids[i]);
         }
+
     }
 }
