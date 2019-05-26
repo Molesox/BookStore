@@ -115,7 +115,6 @@ int main(int argc, char *argv[]) {
             t_tun.join();
             t_ann.join();
 
-            cout << "chichi" << endl;
             john.quit();
             migros->close();
 

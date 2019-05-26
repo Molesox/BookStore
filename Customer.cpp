@@ -231,9 +231,9 @@ void Customer::init_request(int nb_books) {     //add nb_books random book ids t
     } else {
 
         std::random_shuffle(list_ids.begin(), list_ids.end());
-        std::cout << " custom id : requests:  " << m_id << std::endl;
+        std::cout << " custom id : " << m_id << "requests:  " << std::endl;
         for (int i = 0; i < nb_books && i < list_ids.size(); ++i) {
-            std::cout << " id " << list_ids[i] << std::endl;
+            std::cout << " id " << list_ids[i] << " title " << m_lib->get_title_by_Id(list_ids[i]) << std::endl;
             m_Id_requests.push_back(list_ids[i]);
         }
 
