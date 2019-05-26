@@ -147,10 +147,7 @@ int main(int argc, char *argv[]) {
             delete denner;
 
         }
-
-
     }
-
 
     delete l;
     logger->log("Program terminated.");
