@@ -236,7 +236,7 @@ std::vector<Id_t> Library::getIds(std::string genre) {
     for (auto &s : m_library) {
         lg = s.getMGenre();
         if (lg.substr(0, lg.size() - 1) == genre) {
-            cout << "ici" << endl;
+
             return s.getMListIds();
         }
     }

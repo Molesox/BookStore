@@ -40,10 +40,13 @@ void custom_thread(Customer *c) {
 void john_thread(Seller *s) {
 
     while (true) {
+
         if (s->give_book() == -2) {
+
             break;
         }
         s->get_back_book();
+
     }
 }
 
@@ -59,34 +62,74 @@ int main(int argc, char *argv[]) {
     logger->log("Initialized library.");
     cout << *l << endl << endl;
 
-    Shop *migros = new Shop(l, 2, 1);
-    logger->log("Initialized the shop.");
-
-    Seller john(migros);
-    thread t_john(john_thread, &john);
-
-    Customer Samantha(migros, "Treatise", ALL);
-    Customer Kimberly(migros, "Time travel", ALL);
-
-    thread t_sam(custom_thread, &Samantha);
-    thread t_kim(custom_thread, &Kimberly);
-
-
-    john.quit();
-    migros->close();
-    t_john.join();
-
-
-
-    delete l;
-    delete migros;
 
     char in = 'n';
-    while (in != 'y') {
-        std::cout << "wanna quit [y,n] ";
+    while (in != 'q') {
+
+        cout << "Hi, select scenario 1, 2 or 3" << endl;
         cin >> in;
+
+        if (in == '1') {
+            Shop *migros = new Shop(l, 2, 1);
+            logger->log("Initialized the shop. Scenario 1");
+
+            Seller john(migros);
+            thread t_john(john_thread, &john);
+
+            Customer Samantha(migros, "Treatise", ALL);
+            Customer Kimberly(migros, "Time travel", ALL);
+
+            thread t_sam(custom_thread, &Samantha);
+            thread t_kim(custom_thread, &Kimberly);
+
+            t_sam.join();
+            t_kim.join();
+
+            john.quit();
+            migros->close();
+
+            t_john.join();
+
+            delete migros;
+
+        } else if (in == '2') {
+            Shop *migros = new Shop(l, 4, 2);
+            logger->log("Initialized the shop. Scenario 2");
+
+            Seller john(migros);
+            thread t_john(john_thread, &john);
+
+            Customer Samantha(migros, "Treatise", 4);
+            Customer Kimberly(migros, "Treatise", 6);
+            Customer Tungstene(migros, "Treatise", 7);
+            Customer Anne(migros, "Treatise", 6);
+
+            thread t_sam(custom_thread, &Samantha);
+            thread t_kim(custom_thread, &Kimberly);
+            thread t_tun(custom_thread, &Tungstene);
+            thread t_ann(custom_thread, &Anne);
+
+            t_sam.join();
+            t_kim.join();
+
+            t_tun.join();
+            t_ann.join();
+
+            cout << "chichi" << endl;
+            john.quit();
+            migros->close();
+
+            t_john.join();
+
+            delete migros;
+        }
+
+
     }
 
+    delete l;
+
     logger->log("Program terrminated.");
+    delete logger;
     return 0;
 }

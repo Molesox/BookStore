@@ -93,26 +93,29 @@ bool Customer::i_will_be_back() {
 
 void Customer::ask_book() {
 
+    if (m_state == InQueue) {
 
-    for (unsigned long &m_Id_request : m_Id_requests) {//For each request given at the
-        //customer construction
 
-        if (m_lib->book_exists(m_genre_request, m_Id_request)) {//If the books exists,
+        for (unsigned long &m_Id_request : m_Id_requests) {//For each request given at the
+            //customer construction
 
-            m_demands.push_back(m_Id_request);//then it's a demand.
-            m_Id_request = -1;
-            ++nb_books2ask;//The nb of books to ask may be different of the nb of
-            //books requested at customer construction.
+            if (m_lib->book_exists(m_genre_request, m_Id_request)) {//If the books exists,
 
-        } else {
-            cerr << "You are asking for inexistent book. Id : "
-                 << m_Id_request << endl;
-            logger->log(FileLogger::e_logType::LOG_WARNING + "Customer[" + to_string(m_id)
-                        + "] asking for inexistent book. Id : " + to_string(m_Id_request));
+                m_demands.push_back(m_Id_request);//then it's a demand.
+                m_Id_request = -1;
+                ++nb_books2ask;//The nb of books to ask may be different of the nb of
+                //books requested at customer construction.
+
+            } else {
+                cerr << "You are asking for inexistent book. Id : "
+                     << m_Id_request << endl;
+                logger->log(FileLogger::e_logType::LOG_WARNING + "Customer[" + to_string(m_id)
+                            + "] asking for inexistent book. Id : " + to_string(m_Id_request));
+            }
         }
+
     }
     update_requests();
-
     m_state = Asking;//change he's state.
     m_shop->notify_seller();//notify the seller that he has some books demands
     WriteLock shop_lock(m_shop->lck_shop);//Waits for the seller.
@@ -228,8 +231,8 @@ void Customer::init_request(int nb_books) {     //add nb_books random book ids t
     } else {
 
         std::random_shuffle(list_ids.begin(), list_ids.end());
-        for (int i = 0; i < nb_books; ++i) {
-            std::cout << " id  " << list_ids[i] << std::endl;
+        for (int i = 0; i < nb_books && i < list_ids.size(); ++i) {
+
             m_Id_requests.push_back(list_ids[i]);
         }
 

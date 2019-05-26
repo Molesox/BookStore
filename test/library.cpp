@@ -127,7 +127,7 @@ const bool Library::book_exists(const std::string &genre, const Id_t id) const {
     string lg;
     for (const auto &s : m_library) {
         lg = s.getMGenre();
-        if (lg.substr(0, lg.size() - 1) == genre) {
+        if (lg.substr(0, lg.size()) == genre) {
             return s.book_exists(id);
         }
     }
@@ -180,7 +180,7 @@ Book Library::borrow(Id_t id, const std::string &genre) {
     string lg;
     for (auto &s : m_library) {
         lg = s.getMGenre();
-        if (lg.substr(0, lg.size() - 1) == genre) {
+        if (lg.substr(0, lg.size()) == genre) {
             //TODO: Check if b is not null.
             Book b = *s.borrow(id);
             return b;
@@ -204,7 +204,7 @@ Shelf Library::get_shelf_by_genre(const std::string genre) {
     string lg;
     for (const auto &s : m_library) {
         lg = s.getMGenre();
-        if (lg.substr(0, lg.size() - 1) == genre) {
+        if (lg.substr(0, lg.size()) == genre) {
             return s;
         }
     }
@@ -217,4 +217,3 @@ std::ostream &operator<<(std::ostream &os, const Library &library) {
     library.print(os);
     return os;
 }
-
